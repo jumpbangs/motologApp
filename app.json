@@ -7,6 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "motologapp",
     "userInterfaceStyle": "automatic",
+    "entryPoint": "./src/index.tsx",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
@@ -16,7 +17,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.motologapp"
     },
     "web": {
       "bundler": "metro",
