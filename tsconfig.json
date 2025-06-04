@@ -5,7 +5,11 @@
     "paths": {
       "@/*": [
         "./*"
-      ]
+      ],
+      "store/*": ["./app/store/*"],
+      "utils/*": ["./app/utils/*"],
+      "theme/*": ["./app/theme/*"],
+      "components/*": ["./app/components/*"]
     }
   },
   "include": [

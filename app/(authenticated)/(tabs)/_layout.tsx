@@ -1,6 +1,6 @@
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Tabs } from "expo-router";
-import React from "react";
+import React from 'react';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Tabs } from 'expo-router';
 
 const AuthenticatedLayout = () => {
   return (
@@ -8,41 +8,33 @@ const AuthenticatedLayout = () => {
       <Tabs.Screen
         name="Home"
         options={{
-          title: "Home",
+          title: 'Home',
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons size={28} name="house" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="house" color={color} />,
         }}
       />
       <Tabs.Screen
         name="Logs"
         options={{
-          title: "Logs",
+          title: 'Logs',
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons size={28} name="edit-note" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="edit-note" color={color} />,
         }}
       />
       <Tabs.Screen
         name="Maintenance"
         options={{
-          title: "Maintenance",
+          title: 'Maintenance',
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons size={28} name="car-repair" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="car-repair" color={color} />,
         }}
       />
       <Tabs.Screen
         name="Profile"
         options={{
-          title: "Profile",
+          title: 'Profile',
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons size={28} name="person" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="person" color={color} />,
         }}
       />
     </Tabs>

@@ -1,24 +1,25 @@
 // app/index.tsx
-import { zustandStorage } from "@/app/utils/crossPlatformStorage";
-import { Redirect, router } from "expo-router";
-import { useEffect } from "react";
+import React from 'react';
+import { useEffect } from 'react';
+import { Redirect, router } from 'expo-router';
+
+import { zustandStorage } from '@/app/utils/crossPlatformStorage';
 
 const Index = () => {
   useEffect(() => {
     (async () => {
-      const keys = await zustandStorage.getItem("authStore");
-      console.log(keys);
+      const keys = await zustandStorage.getItem('authStore');
       if (keys) {
         const userAuth = JSON.parse(keys);
 
         if (userAuth?.state.authStore) {
-          router.replace("/Home");
+          router.replace('/Home');
         }
       }
     })();
   }, []);
 
-  return <Redirect href="/login" />;
+  return <Redirect href={'/auth/Login'} />;
 };
 
 export default Index;

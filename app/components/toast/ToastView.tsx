@@ -1,6 +1,8 @@
-import { Toast, useToastState } from "@tamagui/toast";
-import * as Burnt from "burnt";
-import { isWeb, YStack } from "tamagui";
+import React from 'react';
+import * as Burnt from 'burnt';
+
+import { isWeb, YStack } from 'tamagui';
+import { Toast, useToastState } from '@tamagui/toast';
 
 const ToastView = () => {
   const currentToast = useToastState();
@@ -25,13 +27,10 @@ const ToastView = () => {
       transform={[{ translateY: 0 }]}
       opacity={1}
       scale={1}
-      viewportName={currentToast.viewportName}
-    >
+      viewportName={currentToast.viewportName}>
       <YStack>
         <Toast.Title>{currentToast.title}</Toast.Title>
-        {!!currentToast.message && (
-          <Toast.Description>{currentToast.message}</Toast.Description>
-        )}
+        {!!currentToast.message && <Toast.Description>{currentToast.message}</Toast.Description>}
       </YStack>
     </Toast>
   );

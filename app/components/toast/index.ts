@@ -1,3 +1,3 @@
-import ToastView from "./ToastView";
+import ToastView from './ToastView';
 
 export default ToastView;
