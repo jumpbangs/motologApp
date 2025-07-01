@@ -1,7 +1,9 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useTheme } from '@rneui/themed';
-import { Tabs } from 'expo-router';
 import React from 'react';
+
+import { Tabs } from 'expo-router';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
+import { useTheme } from '@rneui/themed';
 
 const AuthenticatedLayout = () => {
   const { theme } = useTheme();

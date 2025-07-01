@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { zustandStorage } from '../utils/crossPlatformStorage';
+import { zustandStorage } from 'utils/crossPlatformStorage';
 
 export const useAuthStore = create<any>()(
   persist(

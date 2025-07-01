@@ -32,6 +32,8 @@ export default [
     },
     rules: {
       'prettier/prettier': 'error',
+      'no-duplicate-imports': 'error',
+      'no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: true }],
       // React recommended rules
       ...pluginReact.configs.recommended.rules,
 
@@ -48,21 +50,21 @@ export default [
         {
           groups: [
             ['^react', '^preact', '^@?\\w'],
-            // Tamagui packages
-            ['^tamagui','^@tamagui', ],
+            // Expo Packages
+            ['^expo', '^@expo'],
+            // React native element packages
+            ['^@rneui'],
             // Internal packages.
-            [
-							'^(components|theme|store|services|pages|features|common|utils|routes|types)(/.*|$)',
-						],
-						['^()(/.*|$)'],
-						// Side effect imports.
-						['^\\u0000'],
-						// Parent imports. Put `..` last.
-						['^\\.\\.(?!/?$)', '^\\.\\./?$'],
-						// Other relative imports. Put same-folder imports and `.` last.
-						['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
-						// Style imports.
-						['^.+\\.?(css)$'],
+            ['^(components|theme|store|services|pages|features|common|utils|routes|types)(/.*|$)'],
+            ['^()(/.*|$)'],
+            // Side effect imports.
+            ['^\\u0000'],
+            // Parent imports. Put `..` last.
+            ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
+            // Other relative imports. Put same-folder imports and `.` last.
+            ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
+            // Style imports.
+            ['^.+\\.?(css)$'],
           ],
         },
       ],

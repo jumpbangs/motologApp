@@ -2,10 +2,12 @@ import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Input, Text } from '@rneui/themed';
+
 import { router, useFocusEffect } from 'expo-router';
 
-import { XStack, YStack } from 'components/Stacks';
+import { Button, Input, Text } from '@rneui/themed';
+
+import { XStack, YStack } from 'components/_Stacks';
 import { useAuthStore } from 'store/authStore';
 import { SignInTypes } from 'types/AuthTypes';
 import { LoginInSchema } from 'utils/schema';

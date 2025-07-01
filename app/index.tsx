@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
+
 import { router } from 'expo-router';
 
-import { zustandStorage } from '@/app/utils/crossPlatformStorage';
+import { zustandStorage } from 'utils/crossPlatformStorage';
 
 const Index = () => {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
