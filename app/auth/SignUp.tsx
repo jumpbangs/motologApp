@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,11 +8,14 @@ import { router, useFocusEffect } from 'expo-router';
 import { Button, Input, Text } from '@rneui/themed';
 
 import { XStack, YStack } from 'components/_Stacks';
-// import { createUser } from 'services/firebaseServices';
+import { ToastError, ToastSuccess } from 'components/_Toast';
 import { SignUpTypes } from 'types/AuthTypes';
 import { SignUpSchema } from 'utils/schema';
+import { supabaseService } from 'utils/supabase';
 
 const SignUp = () => {
+  const [loading, setLoading] = useState(false);
+
   const {
     reset,
     control,
@@ -36,8 +39,27 @@ const SignUp = () => {
   );
 
   const onSubmit = async (data: SignUpTypes) => {
+    setLoading(true);
     console.log(data);
-    // const lol = await createUser(data);
+    const {
+      data: { session },
+      error,
+    } = await supabaseService.auth.signUp({
+      email: data.email,
+      password: data.password,
+    });
+
+    if (error) {
+      ToastError(error.message);
+    }
+
+    if (!session) {
+      console.log(session);
+      ToastSuccess('Please check your inbox for email verification');
+    }
+
+    setLoading(false);
+    router.back();
   };
 
   return (
@@ -102,7 +124,7 @@ const SignUp = () => {
               )}
               name="repeat_pass"
             />
-            <Button size="md" onPress={handleSubmit(onSubmit)}>
+            <Button size="md" onPress={handleSubmit(onSubmit)} loading={loading}>
               Sign Up
             </Button>
             <Button size="md" onPress={() => router.back()}>
