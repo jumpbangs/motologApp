@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,11 +8,14 @@ import { router, useFocusEffect } from 'expo-router';
 import { Button, Input, Text } from '@rneui/themed';
 
 import { XStack, YStack } from 'components/_Stacks';
+import { ToastError, ToastSuccess } from 'components/_Toast';
 import { useAuthStore } from 'store/authStore';
 import { SignInTypes } from 'types/AuthTypes';
 import { LoginInSchema } from 'utils/schema';
+import { supabaseService } from 'utils/supabase';
 
 const LoginScreen = () => {
+  const [loading, setLoading] = useState(false);
   const {
     reset,
     control,
@@ -27,11 +30,26 @@ const LoginScreen = () => {
   });
 
   const { login } = useAuthStore();
-  const onSubmit = (data: SignInTypes) => {
-    console.log(data);
+  const onSubmit = async (data: SignInTypes) => {
+    setLoading(true);
+    const {
+      data: { session },
+      error,
+    } = await supabaseService.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
 
-    login('XXX');
-    router.push('/Home');
+    if (error) {
+      ToastError(error.message);
+    }
+
+    if (session) {
+      login(session);
+      ToastSuccess('Welcome back !!');
+      router.push('/Home');
+    }
+    setLoading(false);
   };
 
   const signUpHandler = () => {
@@ -91,7 +109,7 @@ const LoginScreen = () => {
               )}
               name="password"
             />
-            <Button size="md" onPress={handleSubmit(onSubmit)}>
+            <Button size="md" onPress={handleSubmit(onSubmit)} loading={loading}>
               Sign In
             </Button>
           </View>
