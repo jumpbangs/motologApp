@@ -53,7 +53,6 @@ const SignUp = () => {
     }
 
     if (!session) {
-      console.log(session);
       ToastSuccess('Please check your inbox for email verification');
     }
 

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>Redirecting to the app...</p>
+    <script>
+      const params = window.location.search;
+      const hash = window.location.hash;
+      const redirectUrl = `motologapp://auth/UpdatePassword${params}${hash}`;
+      window.location.href = redirectUrl;
+    </script>
+  </body>
+</html>

@@ -1,21 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
-import { zodResolver } from '@hookform/resolvers/zod';
 
-import * as Linking from 'expo-linking';
-import { router, useFocusEffect } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 
 import { Button, Input, Text } from '@rneui/themed';
 
 import { XStack, YStack } from 'components/_Stacks';
-import { ToastError, ToastSuccess } from 'components/_Toast';
-import { ForgetPasswordSchema } from 'utils/schema';
+import { ToastError } from 'components/_Toast';
 import { supabaseService } from 'utils/supabase';
 
-const ForgetPassword = () => {
-  const [loading, setLoading] = useState(false);
-
+const UpdatePassword = () => {
   const {
     reset,
     control,
@@ -23,10 +18,22 @@ const ForgetPassword = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: '',
+      newPassword: '',
+      confirmPass: '',
     },
-    resolver: zodResolver(ForgetPasswordSchema),
   });
+  const [loading, setLoading] = useState(false);
+  const { access_token, type } = useLocalSearchParams();
+
+  useEffect(() => {
+    if (type === 'recovery' && access_token) {
+      supabaseService.auth.exchangeCodeForSession(access_token as string).then(({ error }) => {
+        if (error) {
+          ToastError(error.message);
+        }
+      });
+    }
+  }, [access_token, type]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -38,28 +45,14 @@ const ForgetPassword = () => {
 
   const onSubmit = async (data: any) => {
     setLoading(true);
-
-    const resetPasswordURL = Linking.createURL('auth/UpdatePassword');
-
-    console.log(resetPasswordURL);
-    const { error } = await supabaseService.auth.resetPasswordForEmail(data.email, {
-      redirectTo: resetPasswordURL,
-    });
-
-    if (error) {
-      ToastError(error.message);
-    }
-
-    ToastSuccess('Your please check your inbox for password reset');
-    setLoading(false);
-    router.back();
+    console.log(data);
   };
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <YStack style={{ gap: 10 }}>
         <XStack style={{ justifyContent: 'center' }}>
-          <Text h1>Forget Password</Text>
+          <Text h1>Update Password</Text>
         </XStack>
         <XStack style={{ justifyContent: 'center' }}>
           <View style={{ gap: 4, minWidth: 300 }}>
@@ -69,21 +62,32 @@ const ForgetPassword = () => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   style={{ flex: 1, minHeight: 16 }}
-                  placeholder="Email"
+                  placeholder="New Password"
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
-                  errorMessage={errors.email?.message}
+                  errorMessage={errors.newPassword?.message}
                 />
               )}
-              name="email"
+              name="newPassword"
             />
-
+            <Controller
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  style={{ flex: 1, minHeight: 16 }}
+                  placeholder="Confirm Password"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  errorMessage={errors.newPassword?.message}
+                />
+              )}
+              name="confirmPass"
+            />
             <Button size="md" onPress={handleSubmit(onSubmit)} loading={loading}>
               Reset Password
-            </Button>
-            <Button size="md" onPress={() => router.back()}>
-              Go Back
             </Button>
           </View>
         </XStack>
@@ -92,4 +96,4 @@ const ForgetPassword = () => {
   );
 };
 
-export default ForgetPassword;
+export default UpdatePassword;
