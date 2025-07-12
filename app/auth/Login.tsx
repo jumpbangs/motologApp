@@ -56,6 +56,10 @@ const LoginScreen = () => {
     router.push('/auth/SignUp');
   };
 
+  const forgetPassHandler = () => {
+    router.push('/auth/ForgetPassword');
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       return () => {
@@ -116,7 +120,7 @@ const LoginScreen = () => {
         </XStack>
         <XStack style={{ justifyContent: 'space-evenly', gap: 8 }}>
           <Text onPress={signUpHandler}>Sign Up</Text>
-          <Text>Forget password</Text>
+          <Text onPress={forgetPassHandler}>Forget password</Text>
         </XStack>
       </YStack>
     </View>

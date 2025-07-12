@@ -40,7 +40,6 @@ const SignUp = () => {
 
   const onSubmit = async (data: SignUpTypes) => {
     setLoading(true);
-    console.log(data);
     const {
       data: { session },
       error,
