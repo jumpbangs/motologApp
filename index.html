@@ -4,14 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Redirecting...</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+      .fallback {
+        margin-top: 20px;
+      }
+    </style>
   </head>
   <body>
-    <p>Redirecting to the app...</p>
+    <h3>Redirecting to the app...</h3>
+    <div class="fallback">If nothing happens, <a id="fallbackLink" href="#">tap here</a>.</div>
+
     <script>
       const params = window.location.search;
       const hash = window.location.hash;
-      const redirectUrl = `motologapp://auth/UpdatePassword${params}${hash}`;
-      window.location.href = redirectUrl;
+      const deepLink = `motologapp://auth/UpdatePassword${params}${hash}`;
+
+      // Attempt redirect
+      window.location.href = deepLink;
+
+      // Set fallback link
+      document.getElementById('fallbackLink').href = deepLink;
     </script>
   </body>
 </html>
