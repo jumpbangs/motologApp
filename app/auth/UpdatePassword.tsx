@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 
 import { Button, Input, Text } from '@rneui/themed';
 
@@ -45,7 +45,26 @@ const UpdatePassword = () => {
 
   const onSubmit = async (data: any) => {
     setLoading(true);
-    console.log(data);
+
+    const { newPassword, confirmPass } = data;
+
+    if (newPassword !== confirmPass) {
+      ToastError('Passwords do not match.');
+      setLoading(false);
+      return;
+    }
+
+    const { error } = await supabaseService.auth.updateUser({ password: newPassword });
+
+    setLoading(false);
+
+    if (error) {
+      ToastError(error.message);
+    } else {
+      ToastError('Password updated successfully!');
+      router.push('/');
+      // Optionally navigate away or sign out the user
+    }
   };
 
   return (
@@ -66,6 +85,7 @@ const UpdatePassword = () => {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
+                  secureTextEntry
                   errorMessage={errors.newPassword?.message}
                 />
               )}
@@ -81,6 +101,7 @@ const UpdatePassword = () => {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
+                  secureTextEntry
                   errorMessage={errors.newPassword?.message}
                 />
               )}

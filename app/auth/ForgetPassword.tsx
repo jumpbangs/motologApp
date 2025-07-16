@@ -39,11 +39,8 @@ const ForgetPassword = () => {
   const onSubmit = async (data: any) => {
     setLoading(true);
 
-    const resetPasswordURL = Linking.createURL('auth/UpdatePassword');
-
-    console.log(resetPasswordURL);
     const { error } = await supabaseService.auth.resetPasswordForEmail(data.email, {
-      redirectTo: resetPasswordURL,
+      redirectTo: 'https://jumpbangs.github.io/motologApp/',
     });
 
     if (error) {
