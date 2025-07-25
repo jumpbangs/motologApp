@@ -3,7 +3,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import * as Linking from 'expo-linking';
 import { router, useFocusEffect } from 'expo-router';
 
 import { Button, Input, Text } from '@rneui/themed';

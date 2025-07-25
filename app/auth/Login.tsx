@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { router, useFocusEffect } from 'expo-router';
 
-import { Button, Input, Text } from '@rneui/themed';
+import { Button, Icon, Input, Text } from '@rneui/themed';
 
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
@@ -16,6 +16,8 @@ import { supabaseService } from 'utils/supabase';
 
 const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
+
   const {
     reset,
     control,
@@ -103,12 +105,19 @@ const LoginScreen = () => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   style={{ flex: 1, minHeight: 4 }}
-                  secureTextEntry
+                  secureTextEntry={!showPass}
                   placeholder="Password"
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
                   errorMessage={errors.password?.message}
+                  rightIcon={
+                    <Icon
+                      name={showPass ? 'visibility' : 'visibility-off'}
+                      type="material"
+                      onPress={() => setShowPass(!showPass)}
+                    />
+                  }
                 />
               )}
               name="password"

@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import * as Linking from 'expo-linking';
+import { router, useFocusEffect } from 'expo-router';
 
-import { Button, Input, Text } from '@rneui/themed';
+import { Button, Icon, Input, Text } from '@rneui/themed';
 
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError } from 'components/_Toast';
+import { useAuthStore } from 'store/authStore';
 import { supabaseService } from 'utils/supabase';
 
 const UpdatePassword = () => {
+  const [showPass, setShowPass] = useState({ pass: false, confirm: false });
   const {
     reset,
     control,
@@ -22,18 +25,33 @@ const UpdatePassword = () => {
       confirmPass: '',
     },
   });
+  const { login } = useAuthStore();
   const [loading, setLoading] = useState(false);
-  const { access_token, type } = useLocalSearchParams();
+  const url = Linking.useURL();
 
   useEffect(() => {
-    if (type === 'recovery' && access_token) {
-      supabaseService.auth.exchangeCodeForSession(access_token as string).then(({ error }) => {
-        if (error) {
-          ToastError(error.message);
-        }
-      });
+    if (!url) return;
+
+    const [, hash] = url.split('#');
+    if (hash) {
+      const params = new URLSearchParams(hash);
+      const token = params.get('access_token');
+      const typeParam = params.get('type');
+
+      if (typeParam === 'recovery' && token) {
+        supabaseService.auth.exchangeCodeForSession(token as string).then(({ error }) => {
+          if (error) {
+            ToastError(error.message);
+          }
+        });
+      }
+
+      if (typeParam === 'signup' && token) {
+        login(token);
+        router.push('/Home');
+      }
     }
-  }, [access_token, type]);
+  }, [url]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -85,8 +103,15 @@ const UpdatePassword = () => {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
-                  secureTextEntry
+                  secureTextEntry={!showPass.pass}
                   errorMessage={errors.newPassword?.message}
+                  rightIcon={
+                    <Icon
+                      name={showPass.pass ? 'visibility' : 'visibility-off'}
+                      type="material"
+                      onPress={() => setShowPass(prev => ({ ...prev, pass: !prev.pass }))}
+                    />
+                  }
                 />
               )}
               name="newPassword"
@@ -101,8 +126,15 @@ const UpdatePassword = () => {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
-                  secureTextEntry
+                  secureTextEntry={!showPass.confirm}
                   errorMessage={errors.newPassword?.message}
+                  rightIcon={
+                    <Icon
+                      name={showPass.confirm ? 'visibility' : 'visibility-off'}
+                      type="material"
+                      onPress={() => setShowPass(prev => ({ ...prev, confirm: !prev.confirm }))}
+                    />
+                  }
                 />
               )}
               name="confirmPass"

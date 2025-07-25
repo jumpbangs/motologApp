@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { router, useFocusEffect } from 'expo-router';
 
-import { Button, Input, Text } from '@rneui/themed';
+import { Button, Icon, Input, Text } from '@rneui/themed';
 
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
@@ -15,6 +15,7 @@ import { supabaseService } from 'utils/supabase';
 
 const SignUp = () => {
   const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState({ pass: false, repeat: false });
 
   const {
     reset,
@@ -98,8 +99,15 @@ const SignUp = () => {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
-                  secureTextEntry
+                  secureTextEntry={!showPass.pass}
                   errorMessage={errors.password?.message}
+                  rightIcon={
+                    <Icon
+                      name={showPass.pass ? 'visibility' : 'visibility-off'}
+                      type="material"
+                      onPress={() => setShowPass(prev => ({ ...prev, pass: !prev.pass }))}
+                    />
+                  }
                 />
               )}
               name="password"
@@ -116,8 +124,15 @@ const SignUp = () => {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
-                  secureTextEntry
+                  secureTextEntry={!showPass.repeat}
                   errorMessage={errors.repeat_pass?.message}
+                  rightIcon={
+                    <Icon
+                      name={showPass.repeat ? 'visibility' : 'visibility-off'}
+                      type="material"
+                      onPress={() => setShowPass(prev => ({ ...prev, repeat: !prev.repeat }))}
+                    />
+                  }
                 />
               )}
               name="repeat_pass"
