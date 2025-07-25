@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "motolog-app",
+    "name": "Motolog",
     "slug": "motolog-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -29,7 +29,7 @@
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#1B1C20"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.anonymous.motologapp"
@@ -39,17 +39,13 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1B1C20"
+    },
     "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
-        }
-      ]
+      "expo-router"
     ],
     "experiments": {
       "typedRoutes": true

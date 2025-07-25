@@ -3,13 +3,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Redirect, Stack } from 'expo-router';
 
+import { MAIN } from 'utils/router';
+
 import { useAuthStore } from '@/store/authStore';
 
 const AuthenticatedLayout = () => {
   const authStore = useAuthStore(state => state.authStore);
 
   if (!authStore) {
-    return <Redirect href="/" />;
+    return <Redirect href={MAIN} />;
   }
 
   return (

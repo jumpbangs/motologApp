@@ -11,6 +11,7 @@ import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
 import { useAuthStore } from 'store/authStore';
 import { SignInTypes } from 'types/AuthTypes';
+import { FORGET_PASSWORD, HOME, SIGN_UP } from 'utils/router';
 import { LoginInSchema } from 'utils/schema';
 import { supabaseService } from 'utils/supabase';
 
@@ -49,17 +50,17 @@ const LoginScreen = () => {
     if (session) {
       login(session);
       ToastSuccess('Welcome back !!');
-      router.push('/Home');
+      router.push(HOME);
     }
     setLoading(false);
   };
 
   const signUpHandler = () => {
-    router.push('/auth/SignUp');
+    router.push(SIGN_UP);
   };
 
   const forgetPassHandler = () => {
-    router.push('/auth/ForgetPassword');
+    router.push(FORGET_PASSWORD);
   };
 
   useFocusEffect(
@@ -76,7 +77,8 @@ const LoginScreen = () => {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-      }}>
+      }}
+    >
       <YStack style={{ gap: 10 }}>
         <XStack style={{ justifyContent: 'center' }}>
           <Text h1>MotoLog App</Text>
