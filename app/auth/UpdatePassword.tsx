@@ -9,8 +9,7 @@ import { Button, Icon, Input, Text } from '@rneui/themed';
 
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError } from 'components/_Toast';
-import { useAuthStore } from 'store/authStore';
-import { HOME, MAIN } from 'utils/router';
+import { MAIN } from 'utils/router';
 import { supabaseService } from 'utils/supabase';
 
 const UpdatePassword = () => {
@@ -26,7 +25,6 @@ const UpdatePassword = () => {
       confirmPass: '',
     },
   });
-  const { login } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const url = Linking.useURL();
 
@@ -45,11 +43,6 @@ const UpdatePassword = () => {
             ToastError(error.message);
           }
         });
-      }
-
-      if (typeParam === 'signup' && token) {
-        login(token);
-        router.push(HOME);
       }
     }
   }, [url]);

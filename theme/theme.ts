@@ -33,6 +33,7 @@ export const gruvboxTheme = createTheme({
       },
     }),
     Input: (props, theme) => ({
+      autoCapitalize: 'none',
       disabledInputStyle: {
         backgroundColor: theme.colors.disabled,
       },

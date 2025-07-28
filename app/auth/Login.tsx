@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import * as Linking from 'expo-linking';
 import { router, useFocusEffect } from 'expo-router';
 
 import { Button, Icon, Input, Text } from '@rneui/themed';
@@ -31,6 +32,56 @@ const LoginScreen = () => {
     },
     resolver: zodResolver(LoginInSchema),
   });
+
+  useEffect(() => {
+    const handleDeepLink = async ({ url }: { url: string }) => {
+      if (!url) return;
+
+      const [, hash] = url.split('#');
+      if (!hash) return;
+
+      const params = new URLSearchParams(hash);
+      const token = await params.get('access_token');
+      const refreshToken = await params.get('refresh_token');
+      const typeParam = await params.get('type');
+
+      if (typeParam === 'signup' && token && refreshToken) {
+        const { data, error } = await supabaseService.auth.setSession({
+          access_token: token,
+          refresh_token: refreshToken,
+        });
+
+        if (error) {
+          ToastError(error.message);
+          return;
+        }
+
+        login(data.session);
+        ToastSuccess('Welcome back !!');
+        router.push(HOME);
+      }
+
+      if (typeParam === 'recovery' && token) {
+        // Usually token alone is enough here
+        router.push(`/auth/UpdatePassword#access_token=${token}&type=recovery`);
+      }
+    };
+
+    // Listen for incoming deep links
+    const subscription = Linking.addEventListener('url', handleDeepLink);
+
+    // Check if app opened with a URL initially (cold start)
+    (async () => {
+      const initialUrl = await Linking.getInitialURL();
+      if (initialUrl) {
+        handleDeepLink({ url: initialUrl });
+      }
+    })();
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   const { login } = useAuthStore();
   const onSubmit = async (data: SignInTypes) => {
