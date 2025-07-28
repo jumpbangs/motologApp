@@ -1,28 +1,41 @@
-import Toast from 'react-native-toast-message';
+import Toast, { ToastPosition } from 'react-native-toast-message';
 
-export const ToastError = (msg1: string, msg2?: string) => {
+type ToastArgs = {
+  msg1: string;
+  msg2?: string;
+  pos?: ToastPosition;
+};
+
+export const ToastError = ({ msg1, msg2, pos }: ToastArgs) => {
+  const position = pos ?? 'top';
   return Toast.show({
     type: 'error',
     text1: msg1,
     text2: msg2 && msg2,
     visibilityTime: 3000,
+    position: position,
   });
 };
 
-export const ToastInfo = (msg1: string, msg2?: string) => {
+export const ToastInfo = ({ msg1, msg2, pos }: ToastArgs) => {
+  const position = pos ?? 'top';
   return Toast.show({
     type: 'info',
     text1: msg1,
     text2: msg2 && msg2,
     visibilityTime: 3000,
+    position: position,
   });
 };
 
-export const ToastSuccess = (msg1: string, msg2?: string) => {
+export const ToastSuccess = ({ msg1, msg2, pos }: ToastArgs) => {
+  const position = pos ?? 'top';
+
   return Toast.show({
     type: 'success',
     text1: msg1,
-    text2: msg2 && msg2,
+    text2: msg2,
     visibilityTime: 3000,
+    position,
   });
 };

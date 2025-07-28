@@ -52,18 +52,13 @@ const LoginScreen = () => {
         });
 
         if (error) {
-          ToastError(error.message);
+          ToastError({ msg1: error.message });
           return;
         }
 
         login(data.session);
-        ToastSuccess('Welcome back !!');
+        ToastSuccess({ msg1: 'Welcome back !!', pos: 'bottom' });
         router.push(HOME);
-      }
-
-      if (typeParam === 'recovery' && token) {
-        // Usually token alone is enough here
-        router.push(`/auth/UpdatePassword#access_token=${token}&type=recovery`);
       }
     };
 
@@ -95,12 +90,12 @@ const LoginScreen = () => {
     });
 
     if (error) {
-      ToastError(error.message);
+      ToastError({ msg1: error.message });
     }
 
     if (session) {
       login(session);
-      ToastSuccess('Welcome back !!');
+      ToastSuccess({ msg1: 'Welcome back !!' });
       router.push(HOME);
     }
     setLoading(false);

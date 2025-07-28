@@ -43,10 +43,10 @@ const ForgetPassword = () => {
     });
 
     if (error) {
-      ToastError(error.message);
+      ToastError({ msg1: error.message });
     }
 
-    ToastSuccess('Your please check your inbox for password reset');
+    ToastSuccess({ msg1: 'If you are registered, you should receive an reset-password email.' });
     setLoading(false);
     router.back();
   };

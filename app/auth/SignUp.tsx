@@ -50,11 +50,11 @@ const SignUp = () => {
     });
 
     if (error) {
-      ToastError(error.message);
+      ToastError({ msg1: error.message });
     }
 
     if (!session) {
-      ToastSuccess('Please check your inbox for email verification');
+      ToastSuccess({ msg1: 'Please check your inbox for email verification' });
     }
 
     setLoading(false);
@@ -67,7 +67,8 @@ const SignUp = () => {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-      }}>
+      }}
+    >
       <YStack style={{ gap: 10 }}>
         <XStack style={{ justifyContent: 'center' }}>
           <Text h1>Sign Up</Text>

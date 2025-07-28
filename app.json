@@ -17,13 +17,9 @@
         {
           "action": "VIEW",
           "autoVerify": true,
-          "data": [
-            {
-              "scheme": "https",
-              "host": "jumpbangs.github.io",
-              "pathPrefix": "/motologApp"
-            }
-          ],
+          "data": {
+            "scheme": "motologapp"
+          },
           "category": ["BROWSABLE", "DEFAULT"]
         }
       ],

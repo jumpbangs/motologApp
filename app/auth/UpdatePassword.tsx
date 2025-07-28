@@ -26,26 +26,45 @@ const UpdatePassword = () => {
     },
   });
   const [loading, setLoading] = useState(false);
-  const url = Linking.useURL();
 
   useEffect(() => {
-    if (!url) return;
+    const handleDeepLink = async (url: string) => {
+      const hash = url.split('#')[1];
+      if (!hash) return;
 
-    const [, hash] = url.split('#');
-    if (hash) {
-      const params = new URLSearchParams(hash);
-      const token = params.get('access_token');
-      const typeParam = params.get('type');
+      const hashParams = new URLSearchParams(hash);
+      const access_token = hashParams.get('token');
+      const type = hashParams.get('type');
+      const email = hashParams.get('email');
 
-      if (typeParam === 'recovery' && token) {
-        supabaseService.auth.exchangeCodeForSession(token as string).then(({ error }) => {
-          if (error) {
-            ToastError(error.message);
-          }
+      if (type === 'recovery' && access_token && email) {
+        const { error } = await supabaseService.auth.verifyOtp({
+          type: 'recovery',
+          token: access_token,
+          email: email,
         });
+
+        if (error) {
+          ToastError({ msg1: error.message });
+        }
       }
-    }
-  }, [url]);
+    };
+
+    // Handle app already open (warm start)
+    const subscription = Linking.addEventListener('url', event => {
+      handleDeepLink(event.url);
+    });
+
+    // Handle cold start
+    (async () => {
+      const initialUrl = await Linking.getInitialURL();
+      if (initialUrl) {
+        handleDeepLink(initialUrl);
+      }
+    })();
+
+    return () => subscription.remove();
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -61,7 +80,7 @@ const UpdatePassword = () => {
     const { newPassword, confirmPass } = data;
 
     if (newPassword !== confirmPass) {
-      ToastError('Passwords do not match.');
+      ToastError({ msg1: 'Passwords do not match.' });
       setLoading(false);
       return;
     }
@@ -71,11 +90,10 @@ const UpdatePassword = () => {
     setLoading(false);
 
     if (error) {
-      ToastError(error.message);
+      ToastError({ msg1: error.message });
     } else {
-      ToastError('Password updated successfully!');
+      ToastError({ msg1: 'Password updated successfully!' });
       router.push(MAIN);
-      // Optionally navigate away or sign out the user
     }
   };
 
