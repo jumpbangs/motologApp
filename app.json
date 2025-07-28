@@ -20,8 +20,8 @@
           "data": [
             {
               "scheme": "https",
-              "host": "yourdomain.com",
-              "pathPrefix": "/reset-password"
+              "host": "jumpbangs.github.io",
+              "pathPrefix": "/motologApp"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]
