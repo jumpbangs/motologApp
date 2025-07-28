@@ -38,10 +38,13 @@ const LoginScreen = () => {
       if (!url) return;
 
       const [, hash] = url.split('#');
-      if (!hash) return;
+      if (!hash) {
+        ToastSuccess({ msg1: 'Your account has been verified' });
+        return;
+      }
 
       const params = new URLSearchParams(hash);
-      const token = await params.get('access_token');
+      const token = await params.get('token');
       const refreshToken = await params.get('refresh_token');
       const typeParam = await params.get('type');
 
@@ -61,7 +64,6 @@ const LoginScreen = () => {
         router.push(HOME);
       }
     };
-
     // Listen for incoming deep links
     const subscription = Linking.addEventListener('url', handleDeepLink);
 
@@ -95,7 +97,7 @@ const LoginScreen = () => {
 
     if (session) {
       login(session);
-      ToastSuccess({ msg1: 'Welcome back !!' });
+      ToastSuccess({ msg1: 'Welcome back !!', pos: 'bottom' });
       router.push(HOME);
     }
     setLoading(false);

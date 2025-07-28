@@ -36,6 +36,6 @@ export const ToastSuccess = ({ msg1, msg2, pos }: ToastArgs) => {
     text1: msg1,
     text2: msg2,
     visibilityTime: 3000,
-    position,
+    position: position,
   });
 };
