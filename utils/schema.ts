@@ -17,3 +17,7 @@ export const LoginInSchema = z.object({
   email: z.email('Invalid email'),
   password: z.string().min(6, 'Password are at 6 characters long'),
 });
+
+export const ForgetPasswordSchema = z.object({
+  email: z.email('Invalid email'),
+});

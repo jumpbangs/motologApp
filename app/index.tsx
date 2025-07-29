@@ -4,6 +4,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { router } from 'expo-router';
 
 import { zustandStorage } from 'utils/crossPlatformStorage';
+import { HOME, LOGIN } from 'utils/router';
 
 const Index = () => {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
@@ -14,12 +15,12 @@ const Index = () => {
       if (keys) {
         const userAuth = JSON.parse(keys);
         if (userAuth?.state?.authStore) {
-          router.replace('/Home');
+          router.replace(HOME);
         } else {
-          router.replace('/auth/Login');
+          router.replace(LOGIN);
         }
       } else {
-        router.replace('/auth/Login');
+        router.replace(LOGIN);
       }
       setIsCheckingAuth(false);
     })();
@@ -33,7 +34,7 @@ const Index = () => {
     );
   }
 
-  return null; // or a splash screen
+  return null;
 };
 
 export default Index;

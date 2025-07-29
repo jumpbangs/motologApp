@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { router, useFocusEffect } from 'expo-router';
 
-import { Button, Input, Text } from '@rneui/themed';
+import { Button, Icon, Input, Text } from '@rneui/themed';
 
 import { XStack, YStack } from 'components/_Stacks';
-// import { createUser } from 'services/firebaseServices';
+import { ToastError, ToastSuccess } from 'components/_Toast';
 import { SignUpTypes } from 'types/AuthTypes';
 import { SignUpSchema } from 'utils/schema';
+import { supabaseService } from 'utils/supabase';
 
 const SignUp = () => {
+  const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState({ pass: false, repeat: false });
+
   const {
     reset,
     control,
@@ -36,8 +40,25 @@ const SignUp = () => {
   );
 
   const onSubmit = async (data: SignUpTypes) => {
-    console.log(data);
-    // const lol = await createUser(data);
+    setLoading(true);
+    const {
+      data: { session },
+      error,
+    } = await supabaseService.auth.signUp({
+      email: data.email,
+      password: data.password,
+    });
+
+    if (error) {
+      ToastError({ msg1: error.message });
+    }
+
+    if (!session) {
+      ToastSuccess({ msg1: 'Please check your inbox for email verification' });
+    }
+
+    setLoading(false);
+    router.back();
   };
 
   return (
@@ -46,7 +67,8 @@ const SignUp = () => {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-      }}>
+      }}
+    >
       <YStack style={{ gap: 10 }}>
         <XStack style={{ justifyContent: 'center' }}>
           <Text h1>Sign Up</Text>
@@ -78,8 +100,15 @@ const SignUp = () => {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
-                  secureTextEntry
+                  secureTextEntry={!showPass.pass}
                   errorMessage={errors.password?.message}
+                  rightIcon={
+                    <Icon
+                      name={showPass.pass ? 'visibility' : 'visibility-off'}
+                      type="material"
+                      onPress={() => setShowPass(prev => ({ ...prev, pass: !prev.pass }))}
+                    />
+                  }
                 />
               )}
               name="password"
@@ -96,13 +125,20 @@ const SignUp = () => {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
-                  secureTextEntry
+                  secureTextEntry={!showPass.repeat}
                   errorMessage={errors.repeat_pass?.message}
+                  rightIcon={
+                    <Icon
+                      name={showPass.repeat ? 'visibility' : 'visibility-off'}
+                      type="material"
+                      onPress={() => setShowPass(prev => ({ ...prev, repeat: !prev.repeat }))}
+                    />
+                  }
                 />
               )}
               name="repeat_pass"
             />
-            <Button size="md" onPress={handleSubmit(onSubmit)}>
+            <Button size="md" onPress={handleSubmit(onSubmit)} loading={loading}>
               Sign Up
             </Button>
             <Button size="md" onPress={() => router.back()}>

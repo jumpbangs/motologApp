@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting...</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+      .fallback {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Redirecting to the app...</h3>
+    <div class="fallback">If nothing happens, <a id="fallbackLink" href="#">tap here</a>.</div>
+
+    <script>
+      // Parse the query string
+      const queryParams = new URLSearchParams(window.location.search);
+      const type = queryParams.get('type');
+      const hash = window.location.hash;
+      let deepLink = '';
+      // Determine which screen to redirect to in the app
+      if (type === 'recovery') {
+        // Password reset
+        deepLink = `motologapp://auth/UpdatePassword?${queryParams.toString()}${hash}`;
+      } else if (type === 'signup') {
+        // Email verification
+        deepLink = `motologapp://auth/VerifyEmail?${queryParams.toString()}${hash}`;
+      } else {
+        // Default fallback (optional)
+        deepLink = `motologapp://auth/Login`;
+      }
+
+      // Attempt redirect
+      window.location.href = deepLink;
+
+      // Set fallback link
+      document.getElementById('fallbackLink').href = deepLink;
+    </script>
+  </body>
+</html>
