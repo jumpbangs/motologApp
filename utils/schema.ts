@@ -23,7 +23,7 @@ export const ForgetPasswordSchema = z.object({
 });
 
 export const UpdateUserSchema = z.object({
-  email: z.email('Invalid email'),
-  phone: z.string().regex(AUS_PHONE_REGEX, 'Invalid phone number'),
+  email: z.email('Invalid email').optional().or(z.literal('')),
+  phone: z.string().regex(AUS_PHONE_REGEX, 'Invalid phone number').optional().or(z.literal('')),
   fullName: z.string().min(3, 'Name should at least be 3 characters'),
 });

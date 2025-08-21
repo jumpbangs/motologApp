@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,7 +18,7 @@ import { supabaseService } from '@/utils/supabase';
 
 const UserDetailsScreen = () => {
   const theme = useTheme();
-  const user = userStore.getState().user;
+  const { user, updateUser } = userStore();
   const userMeta = user?.user_metadata;
   const userEmail = user?.email ?? 'A';
   const userPhone = user?.phone ?? 'XXX-XXXX-XXXX';
@@ -26,6 +26,7 @@ const UserDetailsScreen = () => {
   const {
     reset,
     control,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -39,6 +40,16 @@ const UserDetailsScreen = () => {
 
   const [updateDetails, setUpdateDetails] = useState(false);
 
+  useEffect(() => {
+    if (user) {
+      reset({
+        email: user.email ?? 'A',
+        phone: user.phone ?? 'XXX-XXXX-XXXX',
+        fullName: user.user_metadata?.fullName ?? '',
+      });
+    }
+  }, [user, reset]);
+
   const onBackHandler = () => {
     if (updateDetails) {
       ToastInfo({ msg1: 'Changes will not be saved' });
@@ -47,18 +58,20 @@ const UserDetailsScreen = () => {
     router.back();
   };
 
-  const onHandleSubmit = async (data: any) => {
-    const { email, fullName, phone } = data;
-    const { error } = await supabaseService.auth.updateUser({
-      email: email,
-      phone: phone,
+  // TODO: UPDATE EMAIL AND PHONE REQUIRES ADDITIONAL STEPS
+  const onHandleSubmit = async (userData: any) => {
+    const { fullName } = userData;
+    const { data, error } = await supabaseService.auth.updateUser({
       data: {
-        hello: fullName,
+        fullName: fullName,
       },
     });
 
     if (error) {
       ToastError({ msg1: error.message });
+    } else if (data.user) {
+      updateUser(data.user);
+      setValue('fullName', data.user.user_metadata?.fullName || '');
     }
 
     ToastSuccess({ msg1: 'Updated user details' });
