@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 
-const REQ_FIELD = 'Field is required';
+const AUS_PHONE_REGEX = /^(\+?61|0)[2-478]( ?|-?\d){8}$/;
 
 export const SignUpSchema = z
   .object({
@@ -20,4 +20,10 @@ export const LoginInSchema = z.object({
 
 export const ForgetPasswordSchema = z.object({
   email: z.email('Invalid email'),
+});
+
+export const UpdateUserSchema = z.object({
+  email: z.email('Invalid email'),
+  phone: z.string().regex(AUS_PHONE_REGEX, 'Invalid phone number'),
+  fullName: z.string().min(3, 'Name should at least be 3 characters'),
 });

@@ -9,8 +9,11 @@
       "store/*": ["./store/*"],
       "theme/*": ["./theme/*"],
       "utils/*": ["./utils/*"],
+      "styles/*": ["./styles/*"],
+      "pages/*": ["./app/pages/*"],
       "services/*": ["./app/services/*"],
-      "components/*": ["./app/components/*"]
+      "components/*": ["./app/components/*"],
+      "screens/*": ["./app/(authenticated)/screens/*"],
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]

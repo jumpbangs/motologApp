@@ -56,7 +56,7 @@ export default [
             // React native element packages
             ['^@rneui'],
             // Internal packages.
-            ['^(components|theme|store|services|pages|features|common|utils|routes|types)(/.*|$)'],
+            ['^(components|theme|store|services|screens|features|common|utils|routes|types|styles)(/.*|$)'],
             ['^()(/.*|$)'],
             // Side effect imports.
             ['^\\u0000'],
