@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 
-const AUS_PHONE_REGEX = /^(\+?61|0)[2-478]( ?|-?\d){8}$/;
+// const AUS_PHONE_REGEX = /^(\+?61|0)[2-478]( ?|-?\d){8}$/;
 
 export const SignUpSchema = z
   .object({
@@ -23,7 +23,16 @@ export const ForgetPasswordSchema = z.object({
 });
 
 export const UpdateUserSchema = z.object({
-  email: z.email('Invalid email').optional().or(z.literal('')),
-  phone: z.string().regex(AUS_PHONE_REGEX, 'Invalid phone number').optional().or(z.literal('')),
-  fullName: z.string().min(3, 'Name should at least be 3 characters'),
+  fullName: z.string().min(3, 'Name should at least be 3 characters').or(z.literal('')).optional(),
+  street: z
+    .string()
+    .min(3, 'Street must be at least 3 characters long')
+    .or(z.literal(''))
+    .optional(),
+  city: z.string().min(3, 'City must be at least 3 characters long').or(z.literal('')).optional(),
+  postCode: z
+    .string()
+    .regex(/^\d{4}$/, 'Postcode must be 4 digits')
+    .or(z.literal(''))
+    .optional(),
 });
