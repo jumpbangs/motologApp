@@ -41,7 +41,13 @@
       "backgroundColor": "#1B1C20"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to upload pictures to the server."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

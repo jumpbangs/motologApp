@@ -33,19 +33,27 @@ const UpdatePassword = () => {
       if (!hash) return;
 
       const hashParams = new URLSearchParams(hash);
-      const access_token = hashParams.get('token');
+      const token = hashParams.get('token');
       const type = hashParams.get('type');
       const email = hashParams.get('email');
 
-      if (type === 'recovery' && access_token && email) {
-        const { error } = await supabaseService.auth.verifyOtp({
+      if (type === 'recovery' && token && email) {
+        const { data: resetData, error } = await supabaseService.auth.verifyOtp({
           type: 'recovery',
-          token: access_token,
+          token: token,
           email: email,
         });
 
         if (error) {
           ToastError({ msg1: error.message });
+        }
+
+        // Sets reset session
+        if (resetData?.session) {
+          await supabaseService.auth.setSession({
+            access_token: resetData.session.access_token,
+            refresh_token: resetData.session.refresh_token,
+          });
         }
       }
     };
