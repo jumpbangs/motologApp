@@ -12,9 +12,10 @@ export const XStack: React.FC<StackProps> = ({ children, style, ...props }) => (
   </View>
 );
 
+// Fix for YStack
 export const YStack: React.FC<StackProps> = ({ children, style, ...props }) => (
   <View style={[styles.column, style]} {...props}>
-    {children}
+    {React.Children.toArray(children)}
   </View>
 );
 

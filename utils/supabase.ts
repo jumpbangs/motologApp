@@ -3,7 +3,7 @@ import { createClient, processLock } from '@supabase/supabase-js';
 
 export const supabaseService = createClient(
   process.env.EXPO_PUBLIC_SUPABASE_URL!,
-  process.env.EXPO_PUBLIC_SUPABASE_KEY!,
+  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!,
   {
     auth: {
       storage: AsyncStorage,

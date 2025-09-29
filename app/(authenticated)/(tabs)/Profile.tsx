@@ -3,8 +3,9 @@ import { View } from 'react-native';
 
 import { router } from 'expo-router';
 
-import { Button, Text, useTheme } from '@rneui/themed';
+import { Button, useTheme } from '@rneui/themed';
 
+import ProfileScreen from 'screens/Profile/ProfileScreen';
 import { useAuthStore } from 'store/authStore';
 import { zustandStorage } from 'utils/crossPlatformStorage';
 import { MAIN } from 'utils/router';
@@ -26,8 +27,7 @@ const Profile = () => {
         backgroundColor: theme.colors.background,
       }}
     >
-      <Text>Profile</Text>
-
+      <ProfileScreen />
       <Button onPress={logoutHandler}>Logout</Button>
     </View>
   );
