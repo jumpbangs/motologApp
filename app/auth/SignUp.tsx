@@ -14,7 +14,7 @@ import { setDoc } from 'firebase/firestore';
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
 import { SignUpTypes } from 'types/authTypes';
-import { getAuthErrorMessage, getUserDocRef } from 'utils/firebaseService';
+import { getAuthErrorMessage, userDocRef } from 'utils/firebaseService';
 import { SignUpSchema } from 'utils/schema';
 
 const SignUp = () => {
@@ -53,7 +53,7 @@ const SignUp = () => {
       );
       const user = userCredential.user;
 
-      await setDoc(getUserDocRef(user.uid), {
+      await setDoc(userDocRef(user.uid), {
         uid: user.uid,
         street: '',
         city: '',

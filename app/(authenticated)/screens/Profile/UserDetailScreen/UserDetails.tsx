@@ -17,7 +17,7 @@ import LeftIconInput from 'components/LeftIconInput';
 import ThemeSwitcher from 'components/ThemeSwitcher';
 import { userStore } from 'store/userStore';
 import { profileStyle } from 'styles/profileStyles';
-import { firebaseAuth, getAuthErrorMessage, getUserDocRef } from 'utils/firebaseService';
+import { firebaseAuth, getAuthErrorMessage, userDocRef } from 'utils/firebaseService';
 import { UpdateUserSchema } from 'utils/schema';
 
 const UserDetailsScreen = () => {
@@ -71,7 +71,7 @@ const UserDetailsScreen = () => {
 
     if (!currentUser) return;
 
-    const userDocRef = getUserDocRef(currentUser.uid);
+    const userRef = userDocRef(currentUser.uid);
 
     try {
       // 1. Update display name if it changed
@@ -80,10 +80,10 @@ const UserDetailsScreen = () => {
       }
 
       // 2. Update Firestore document
-      await updateDoc(userDocRef, docData);
+      await updateDoc(userRef, docData);
 
       // 3. Fetch the updated Firestore document
-      const docSnap = await getDoc(userDocRef);
+      const docSnap = await getDoc(userRef);
 
       if (docSnap.exists()) {
         const updatedUserData = {

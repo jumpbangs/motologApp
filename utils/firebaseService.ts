@@ -33,8 +33,12 @@ const firebaseDb = getFirestore(app);
 
 export { app, firebaseAuth, firebaseDb };
 
-export const getUserDocRef = (uid: string) => {
+export const userDocRef = (uid: string) => {
   return doc(firebaseDb, 'users', uid);
+};
+
+export const fuelLogDocRef = (uid: string) => {
+  return doc(firebaseDb, 'fuelLog', uid);
 };
 
 // Error mapping (unchanged)

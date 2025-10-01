@@ -13,7 +13,7 @@ import { MAIN } from 'utils/router';
 
 import { useAuthStore } from '@/store/authStore';
 import { userStore } from '@/store/userStore';
-import { getUserDocRef } from '@/utils/firebaseService';
+import { userDocRef } from '@/utils/firebaseService';
 
 const AuthenticatedLayout = () => {
   const theme = useTheme();
@@ -25,7 +25,7 @@ const AuthenticatedLayout = () => {
 
     const unsubscribe = onAuthStateChanged(auth, async firebaseUser => {
       if (firebaseUser) {
-        const docUserRef = getUserDocRef(firebaseUser.uid);
+        const docUserRef = userDocRef(firebaseUser.uid);
         const docSnap = await getDoc(docUserRef);
 
         let userData: any = firebaseUser;
