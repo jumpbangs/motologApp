@@ -13,10 +13,9 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
+      "eslint --fix"
     ],
-    "*.{css,md}": "prettier --write"
+    "*.{js,jsx,ts,tsx,css,md}": "prettier --write"
   },
   "dependencies": {
     "@csark0812/zustand-expo-devtools": "^2.0.2",
