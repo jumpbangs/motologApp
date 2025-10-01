@@ -1,11 +1,21 @@
 /* eslint-disable no-unused-vars */
-import { User } from '@supabase/supabase-js';
 import { create } from 'zustand';
 
+import { User, UserMetadata } from 'firebase/auth';
+
+interface ExtendedUserMetadata extends UserMetadata {
+  street?: string;
+  city?: string;
+  postCode?: string;
+}
+
+interface FirebaseUserWithExtraMetadata extends Omit<User, 'metadata'> {
+  metadata: ExtendedUserMetadata;
+}
 interface UserState {
-  user: User | null;
-  setUser: (data: User) => void;
-  updateUser: (data: User) => void;
+  user: FirebaseUserWithExtraMetadata | null;
+  setUser: (data: FirebaseUserWithExtraMetadata) => void;
+  updateUser: (data: FirebaseUserWithExtraMetadata) => void;
   deleteUser: () => void;
   userTheme: 'light' | 'dark';
   updateUserTheme: (mode: 'light' | 'dark') => void;

@@ -8,7 +8,7 @@ interface StackProps {
 
 export const XStack: React.FC<StackProps> = ({ children, style, ...props }) => (
   <View style={[styles.row, style]} {...props}>
-    {children}
+    {React.Children.toArray(children)}
   </View>
 );
 

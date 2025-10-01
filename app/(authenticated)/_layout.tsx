@@ -12,9 +12,10 @@ import { useAuthStore } from '@/store/authStore';
 
 const AuthenticatedLayout = () => {
   const theme = useTheme();
-  const authStore = useAuthStore(state => state.authStore);
+  const authStore = useAuthStore.getState().authStore;
 
   const statusBarStyle = theme.theme.mode === 'dark' ? 'light' : 'dark';
+
   if (!authStore) {
     return <Redirect href={MAIN} />;
   }

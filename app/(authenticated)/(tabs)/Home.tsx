@@ -3,20 +3,25 @@ import { View } from 'react-native';
 
 import { Text, useTheme } from '@rneui/themed';
 
+import { doc, getDoc } from 'firebase/firestore';
+
 import { userStore } from 'store/userStore';
-import { supabaseService } from 'utils/supabase';
+import { firebaseAuth, firebaseDb } from 'utils/firebaseService';
 
 const Home = () => {
   const { theme } = useTheme();
 
   useEffect(() => {
     const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabaseService.auth.getUser();
+      if (firebaseAuth && firebaseAuth.currentUser) {
+        let userData = firebaseAuth.currentUser;
+        const docUserRef = doc(firebaseDb, 'users', firebaseAuth.currentUser?.uid);
+        const docSnap = await getDoc(docUserRef);
+        if (docSnap.exists()) {
+          userData = { ...userData, metadata: docSnap.data() };
+        }
 
-      if (user) {
-        userStore.getState().setUser(user);
+        userStore.getState().setUser(userData);
       }
     };
 

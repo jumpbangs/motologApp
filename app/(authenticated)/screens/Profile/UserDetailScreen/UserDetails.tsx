@@ -7,24 +7,28 @@ import { router } from 'expo-router';
 
 import { Button, Text, useTheme } from '@rneui/themed';
 
+import { FirebaseError } from 'firebase/app';
+import { updateProfile } from 'firebase/auth';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastInfo, ToastSuccess } from 'components/_Toast';
 import LeftIconInput from 'components/LeftIconInput';
 import ThemeSwitcher from 'components/ThemeSwitcher';
 import { userStore } from 'store/userStore';
-import { styles } from 'styles/profileStyles';
+import { profileStyle } from 'styles/profileStyles';
+import { firebaseAuth, firebaseDb, getAuthErrorMessage } from 'utils/firebaseService';
 import { UpdateUserSchema } from 'utils/schema';
-
-import { supabaseService } from '@/utils/supabase';
 
 const UserDetailsScreen = () => {
   const theme = useTheme();
   const { user, updateUser } = userStore();
-  const userMeta = user?.user_metadata;
-  const fullName = userMeta?.fullName ?? '';
-  const street = userMeta?.street ?? '';
-  const city = userMeta?.city ?? '';
-  const postCode = userMeta?.postCode ?? '';
+
+  const fullName = user?.displayName ?? '';
+  const userMetaData = user?.metadata;
+  const street = userMetaData?.street ?? '';
+  const city = userMetaData?.city ?? '';
+  const postCode = userMetaData?.postCode ?? '';
   const {
     reset,
     control,
@@ -43,10 +47,10 @@ const UserDetailsScreen = () => {
   useEffect(() => {
     if (user) {
       reset({
-        fullName: userMeta?.fullName ?? '',
-        street: userMeta?.street ?? '',
-        city: userMeta?.firstName ?? '',
-        postCode: userMeta?.postCode ?? '',
+        fullName: user?.displayName ?? '',
+        street: userMetaData?.street ?? '',
+        city: userMetaData?.city ?? '',
+        postCode: userMetaData?.postCode ?? '',
       });
     }
   }, [user, reset]);
@@ -59,31 +63,49 @@ const UserDetailsScreen = () => {
     router.back();
   };
 
-  // TODO: UPDATE EMAIL AND PHONE REQUIRES ADDITIONAL STEPS
   const onHandleSubmit = async (userData: any) => {
     const { fullName, street, city, postCode } = userData;
-    const { data, error } = await supabaseService.auth.updateUser({
-      data: {
-        fullName: fullName,
-        street: street,
-        city: city,
-        postCode: postCode,
-      },
-    });
+    const docData = { city, street, postCode };
 
-    if (error) {
-      ToastError({ msg1: error.message });
-    } else if (data.user) {
-      updateUser(data.user);
+    const currentUser = firebaseAuth.currentUser;
+
+    if (!currentUser) return;
+
+    const userDocRef = doc(firebaseDb, 'users', currentUser.uid);
+
+    try {
+      // 1. Update display name if it changed
+      if (currentUser.displayName !== fullName) {
+        await updateProfile(currentUser, { displayName: fullName });
+      }
+
+      // 2. Update Firestore document
+      await updateDoc(userDocRef, docData);
+
+      // 3. Fetch the updated Firestore document
+      const docSnap = await getDoc(userDocRef);
+
+      if (docSnap.exists()) {
+        const updatedUserData = {
+          ...currentUser,
+          metadata: docSnap.data(),
+        };
+
+        // 4. Update local user state
+        updateUser(updatedUserData);
+        ToastSuccess({ msg1: 'Updated user details' });
+        router.back();
+      }
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        ToastError({ msg1: getAuthErrorMessage(error.code) });
+      }
     }
-
-    ToastSuccess({ msg1: 'Updated user details' });
-    router.back();
   };
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.theme.colors.background }}>
-      <View style={styles.section}>
+      <View style={profileStyle.section}>
         <YStack style={{ gap: 10 }}>
           <Text h2>User Details</Text>
           <YStack style={{ gap: 2, marginTop: 10 }}>

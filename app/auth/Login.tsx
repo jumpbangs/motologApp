@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
+import { FirebaseError } from '@firebase/util';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import * as Linking from 'expo-linking';
 import { router, useFocusEffect } from 'expo-router';
 
 import { Button, Icon, Input, Text } from '@rneui/themed';
 
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
 import { useAuthStore } from 'store/authStore';
-import { SignInTypes } from 'types/AuthTypes';
+import { SignInTypes } from 'types/authTypes';
+import { getAuthErrorMessage } from 'utils/firebaseService';
 import { FORGET_PASSWORD, HOME, SIGN_UP } from 'utils/router';
 import { LoginInSchema } from 'utils/schema';
-import { supabaseService } from 'utils/supabase';
+
+import { firebaseAuth } from '@/utils/firebaseService';
 
 const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
@@ -33,72 +37,18 @@ const LoginScreen = () => {
     resolver: zodResolver(LoginInSchema),
   });
 
-  useEffect(() => {
-    const handleDeepLink = async ({ url }: { url: string }) => {
-      if (!url) return;
-
-      const [, hash] = url.split('#');
-      if (!hash) {
-        ToastSuccess({ msg1: 'Your account has been verified' });
-        return;
-      }
-
-      const params = new URLSearchParams(hash);
-      const token = await params.get('token');
-      const refreshToken = await params.get('refresh_token');
-      const typeParam = await params.get('type');
-
-      if (typeParam === 'signup' && token && refreshToken) {
-        const { data, error } = await supabaseService.auth.setSession({
-          access_token: token,
-          refresh_token: refreshToken,
-        });
-
-        if (error) {
-          ToastError({ msg1: error.message });
-          return;
-        }
-
-        login(data.session);
-        ToastSuccess({ msg1: 'Welcome back !!', pos: 'bottom' });
-        router.push(HOME);
-      }
-    };
-    // Listen for incoming deep links
-    const subscription = Linking.addEventListener('url', handleDeepLink);
-
-    // Check if app opened with a URL initially (cold start)
-    (async () => {
-      const initialUrl = await Linking.getInitialURL();
-      if (initialUrl) {
-        handleDeepLink({ url: initialUrl });
-      }
-    })();
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
   const { login } = useAuthStore();
   const onSubmit = async (data: SignInTypes) => {
     setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabaseService.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
-    });
-
-    if (error) {
-      ToastError({ msg1: error.message });
-    }
-
-    if (session) {
-      login(session);
+    try {
+      const response = await signInWithEmailAndPassword(firebaseAuth, data.email, data.password);
+      login(response);
       ToastSuccess({ msg1: 'Welcome back !!', pos: 'bottom' });
       router.push(HOME);
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        ToastError({ msg1: getAuthErrorMessage(error.code) });
+      }
     }
     setLoading(false);
   };

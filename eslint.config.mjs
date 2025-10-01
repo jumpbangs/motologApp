@@ -55,6 +55,8 @@ export default [
             ['^expo', '^@expo'],
             // React native element packages
             ['^@rneui'],
+            // Firebase Packages
+            ['^firebase'],
             // Internal packages.
             ['^(components|theme|store|services|screens|features|common|utils|routes|types|styles)(/.*|$)'],
             ['^()(/.*|$)'],
