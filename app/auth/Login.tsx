@@ -75,8 +75,7 @@ const LoginScreen = () => {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-      }}
-    >
+      }}>
       <YStack style={{ gap: 10 }}>
         <XStack style={{ justifyContent: 'center' }}>
           <Text h1>MotoLog App</Text>

@@ -77,8 +77,7 @@ const SignUp = () => {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-      }}
-    >
+      }}>
       <YStack style={{ gap: 10 }}>
         <XStack style={{ justifyContent: 'center' }}>
           <Text h1>Sign Up</Text>

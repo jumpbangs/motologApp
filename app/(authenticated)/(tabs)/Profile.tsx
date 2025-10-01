@@ -37,8 +37,7 @@ const Profile = () => {
       style={{
         flex: 1,
         backgroundColor: theme.colors.background,
-      }}
-    >
+      }}>
       <ProfileScreen />
       <Button onPress={logoutHandler}>Logout</Button>
     </View>

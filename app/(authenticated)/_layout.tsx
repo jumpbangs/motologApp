@@ -48,8 +48,7 @@ const AuthenticatedLayout = () => {
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: theme.theme.colors.background }}
-      edges={['top', 'left', 'right']}
-    >
+      edges={['top', 'left', 'right']}>
       <StatusBar style={statusBarStyle} translucent />
       <Stack screenOptions={{ headerShown: false }} />
     </SafeAreaView>

@@ -12,8 +12,7 @@ const UpdatePasswordScreen = () => {
         style={{
           padding: 4,
           marginTop: 4,
-        }}
-      >
+        }}>
         <Text h1>LOL</Text>
       </View>
     </View>

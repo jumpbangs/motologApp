@@ -12,8 +12,7 @@ const AuthenticatedTabLayout = () => {
       screenOptions={{
         tabBarStyle: { backgroundColor: theme.colors.background },
         tabBarActiveTintColor: theme.colors.primary,
-      }}
-    >
+      }}>
       <Tabs.Screen
         name="Home"
         options={{

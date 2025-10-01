@@ -142,8 +142,7 @@ const UserDetailsScreen = () => {
             />
 
             <XStack
-              style={{ justifyContent: 'space-between', marginHorizontal: 10, marginVertical: 20 }}
-            >
+              style={{ justifyContent: 'space-between', marginHorizontal: 10, marginVertical: 20 }}>
               <Text h4>UI Theme</Text>
               <ThemeSwitcher />
             </XStack>
@@ -154,8 +153,7 @@ const UserDetailsScreen = () => {
         <Button
           onPress={() => {
             handleSubmit(onHandleSubmit)();
-          }}
-        >
+          }}>
           Save
         </Button>
         <Button onPress={() => onBackHandler()}>Back</Button>

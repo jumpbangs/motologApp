@@ -12,8 +12,7 @@ const Home = () => {
         style={{
           flex: 1,
           backgroundColor: theme.colors.background,
-        }}
-      >
+        }}>
         <Text>Home</Text>
         <Text>Home</Text>
         <Text>Home</Text>

@@ -35,8 +35,7 @@ const ProfileScreen = () => {
   return (
     <ScrollView
       style={profileStyle.container}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-    >
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={profileStyle.section}>
         <YStack style={{ gap: 10 }}>
           <XStack style={{ gap: 4 }} key="user-info">
@@ -58,8 +57,7 @@ const ProfileScreen = () => {
                   flexDirection: 'row',
                   alignContent: 'center',
                   justifyContent: 'space-between',
-                }}
-              >
+                }}>
                 <View style={[profileStyle.row, { gap: 8 }]}>
                   <Icon name={item.icon} type="material" color="grey" size={28} />
                   <Text h4>{item.title}</Text>

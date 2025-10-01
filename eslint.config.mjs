@@ -20,8 +20,8 @@ export default [
     },
     plugins: {
       react: pluginReact,
-      prettier: pluginPrettier,
       'react-native': pluginReactNative,
+      prettier: pluginPrettier,
       'simple-import-sort': simpleImportSort,
     },
     settings: {
@@ -31,17 +31,24 @@ export default [
       },
     },
     rules: {
+      // Enforce Prettier formatting as ESLint errors
       'prettier/prettier': 'error',
+
+      // ESLint rules
       'no-duplicate-imports': 'error',
       'no-console': 'error',
-      'no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: true }],
+      'no-unused-vars': [
+        'error',
+        { vars: 'all', args: 'after-used', ignoreRestSiblings: true },
+      ],
+
       // React recommended rules
       ...pluginReact.configs.recommended.rules,
 
-      // Prettier plugin recommended rules (adds `prettier/prettier`: "error")
+      // Prettier recommended rules
       ...pluginPrettier.configs.recommended.rules,
 
-      // Disables ESLint rules that conflict with Prettier
+      // Disable ESLint rules that conflict with Prettier
       ...prettier.rules,
 
       // simple-import-sort rules
@@ -51,26 +58,20 @@ export default [
         {
           groups: [
             ['^react', '^preact', '^@?\\w'],
-            // Expo Packages
             ['^expo', '^@expo'],
-            // React native element packages
             ['^@rneui'],
-            // Firebase Packages
             ['^firebase'],
-            // Internal packages.
             ['^(components|theme|store|services|screens|features|common|utils|routes|types|styles)(/.*|$)'],
             ['^()(/.*|$)'],
-            // Side effect imports.
             ['^\\u0000'],
-            // Parent imports. Put `..` last.
             ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
-            // Other relative imports. Put same-folder imports and `.` last.
             ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
-            // Style imports.
             ['^.+\\.?(css)$'],
           ],
         },
       ],
+
+      // Turn off rules conflicting with simple-import-sort
       'import/order': 'off',
       'sort-imports': 'off',
     },
