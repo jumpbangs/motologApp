@@ -9,7 +9,7 @@ import { Button, Text, useTheme } from '@rneui/themed';
 
 import { FirebaseError } from 'firebase/app';
 import { updateProfile } from 'firebase/auth';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getDoc, updateDoc } from 'firebase/firestore';
 
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastInfo, ToastSuccess } from 'components/_Toast';
@@ -17,7 +17,7 @@ import LeftIconInput from 'components/LeftIconInput';
 import ThemeSwitcher from 'components/ThemeSwitcher';
 import { userStore } from 'store/userStore';
 import { profileStyle } from 'styles/profileStyles';
-import { firebaseAuth, firebaseDb, getAuthErrorMessage } from 'utils/firebaseService';
+import { firebaseAuth, getAuthErrorMessage, getUserDocRef } from 'utils/firebaseService';
 import { UpdateUserSchema } from 'utils/schema';
 
 const UserDetailsScreen = () => {
@@ -71,7 +71,7 @@ const UserDetailsScreen = () => {
 
     if (!currentUser) return;
 
-    const userDocRef = doc(firebaseDb, 'users', currentUser.uid);
+    const userDocRef = getUserDocRef(currentUser.uid);
 
     try {
       // 1. Update display name if it changed

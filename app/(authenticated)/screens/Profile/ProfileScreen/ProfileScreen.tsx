@@ -12,7 +12,7 @@ import { profileStyle } from 'styles/profileStyles';
 
 const PROFILE_ITEMS = [
   { icon: 'person', title: 'Update Details', path: '/screens/Profile/UserDetailScreen', key: 1 },
-  { icon: 'lock', title: 'Password', path: '/', key: 2 },
+  { icon: 'lock', title: 'Password', path: '/screens/Profile/UpdatePassword', key: 2 },
 ] as const;
 
 const ProfileScreen = () => {

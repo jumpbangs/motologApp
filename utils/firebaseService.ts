@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { FirebaseApp, getApp, getApps, initializeApp } from 'firebase/app';
 import { Auth, getAuth, getReactNativePersistence, initializeAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { doc, getFirestore } from 'firebase/firestore';
 
 // Firebase config
 const firebaseConfig = {
@@ -32,6 +32,10 @@ if (getApps().length === 0) {
 const firebaseDb = getFirestore(app);
 
 export { app, firebaseAuth, firebaseDb };
+
+export const getUserDocRef = (uid: string) => {
+  return doc(firebaseDb, 'users', uid);
+};
 
 // Error mapping (unchanged)
 const AuthErrorsCodes: { [key: string]: string } = {

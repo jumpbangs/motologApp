@@ -9,12 +9,12 @@ import { router, useFocusEffect } from 'expo-router';
 import { Button, Icon, Input, Text } from '@rneui/themed';
 
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { setDoc } from 'firebase/firestore';
 
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
 import { SignUpTypes } from 'types/authTypes';
-import { firebaseDb, getAuthErrorMessage } from 'utils/firebaseService';
+import { getAuthErrorMessage, getUserDocRef } from 'utils/firebaseService';
 import { SignUpSchema } from 'utils/schema';
 
 const SignUp = () => {
@@ -53,7 +53,7 @@ const SignUp = () => {
       );
       const user = userCredential.user;
 
-      await setDoc(doc(firebaseDb, 'users', user.uid), {
+      await setDoc(getUserDocRef(user.uid), {
         uid: user.uid,
         street: '',
         city: '',

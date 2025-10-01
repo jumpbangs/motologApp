@@ -6,15 +6,40 @@ import { StatusBar } from 'expo-status-bar';
 
 import { useTheme } from '@rneui/themed';
 
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getDoc } from 'firebase/firestore';
+
 import { MAIN } from 'utils/router';
 
 import { useAuthStore } from '@/store/authStore';
+import { userStore } from '@/store/userStore';
+import { getUserDocRef } from '@/utils/firebaseService';
 
 const AuthenticatedLayout = () => {
   const theme = useTheme();
   const authStore = useAuthStore.getState().authStore;
-
   const statusBarStyle = theme.theme.mode === 'dark' ? 'light' : 'dark';
+
+  React.useEffect(() => {
+    const auth = getAuth();
+
+    const unsubscribe = onAuthStateChanged(auth, async firebaseUser => {
+      if (firebaseUser) {
+        const docUserRef = getUserDocRef(firebaseUser.uid);
+        const docSnap = await getDoc(docUserRef);
+
+        let userData: any = firebaseUser;
+        if (docSnap.exists()) {
+          userData = { ...firebaseUser, metadata: docSnap.data() };
+        }
+        userStore.getState().setUser(userData);
+      } else {
+        userStore.getState().deleteUser();
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   if (!authStore) {
     return <Redirect href={MAIN} />;
