@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
+import { FirebaseError } from '@firebase/util';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { router, useFocusEffect } from 'expo-router';
 
 import { Button, Icon, Input, Text } from '@rneui/themed';
 
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { setDoc } from 'firebase/firestore';
+
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
-import { SignUpTypes } from 'types/AuthTypes';
+import { SignUpTypes } from 'types/authTypes';
+import { getAuthErrorMessage, userDocRef } from 'utils/firebaseService';
 import { SignUpSchema } from 'utils/schema';
-import { supabaseService } from 'utils/supabase';
 
 const SignUp = () => {
   const [loading, setLoading] = useState(false);
@@ -41,24 +45,30 @@ const SignUp = () => {
 
   const onSubmit = async (data: SignUpTypes) => {
     setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabaseService.auth.signUp({
-      email: data.email,
-      password: data.password,
-    });
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        getAuth(),
+        data.email,
+        data.password
+      );
+      const user = userCredential.user;
 
-    if (error) {
-      ToastError({ msg1: error.message });
+      await setDoc(userDocRef(user.uid), {
+        uid: user.uid,
+        street: '',
+        city: '',
+        postCode: '',
+      });
+
+      ToastSuccess({ msg1: 'Account Created' });
+      setLoading(false);
+      router.back();
+    } catch (error: unknown) {
+      setLoading(false);
+      if (error instanceof FirebaseError) {
+        ToastError({ msg1: getAuthErrorMessage(error.code) });
+      }
     }
-
-    if (!session) {
-      ToastSuccess({ msg1: 'Please check your inbox for email verification' });
-    }
-
-    setLoading(false);
-    router.back();
   };
 
   return (
@@ -67,8 +77,7 @@ const SignUp = () => {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-      }}
-    >
+      }}>
       <YStack style={{ gap: 10 }}>
         <XStack style={{ justifyContent: 'center' }}>
           <Text h1>Sign Up</Text>

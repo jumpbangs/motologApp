@@ -5,7 +5,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import { useTheme } from '@rneui/themed';
 
-const AuthenticatedLayout = () => {
+const AuthenticatedTabLayout = () => {
   const { theme } = useTheme();
   return (
     <Tabs
@@ -49,4 +49,4 @@ const AuthenticatedLayout = () => {
   );
 };
 
-export default AuthenticatedLayout;
+export default AuthenticatedTabLayout;

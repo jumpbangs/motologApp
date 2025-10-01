@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
+import { FirebaseError } from '@firebase/util';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { router, useFocusEffect } from 'expo-router';
 
 import { Button, Input, Text } from '@rneui/themed';
 
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
+import { getAuthErrorMessage } from 'utils/firebaseService';
 import { ForgetPasswordSchema } from 'utils/schema';
-import { supabaseService } from 'utils/supabase';
 
 const ForgetPassword = () => {
   const [loading, setLoading] = useState(false);
@@ -38,17 +41,16 @@ const ForgetPassword = () => {
   const onSubmit = async (data: any) => {
     setLoading(true);
 
-    const { error } = await supabaseService.auth.resetPasswordForEmail(data.email, {
-      redirectTo: 'https://jumpbangs.github.io/motologApp/',
-    });
-
-    if (error) {
-      ToastError({ msg1: error.message });
+    try {
+      await sendPasswordResetEmail(getAuth(), data.email);
+      ToastSuccess({ msg1: 'If you are registered, you should receive an reset-password email.' });
+      setLoading(false);
+      router.back();
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        ToastError({ msg1: getAuthErrorMessage(error.code) });
+      }
     }
-
-    ToastSuccess({ msg1: 'If you are registered, you should receive an reset-password email.' });
-    setLoading(false);
-    router.back();
   };
 
   return (
