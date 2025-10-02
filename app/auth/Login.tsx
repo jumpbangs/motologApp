@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { router, useFocusEffect } from 'expo-router';
 
-import { Button, Icon, Input, Text } from '@rneui/themed';
+import { Button, CheckBox, Icon, Input, Text } from '@rneui/themed';
 
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
@@ -14,19 +14,27 @@ import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
 import { useAuthStore } from 'store/authStore';
 import { SignInTypes } from 'types/authTypes';
-import { getFirebaseErrorMessage } from 'utils/firebaseService';
+import { firebaseAuth, getFirebaseErrorMessage } from 'utils/firebaseService';
 import { FORGET_PASSWORD, HOME, SIGN_UP } from 'utils/router';
 import { LoginInSchema } from 'utils/schema';
 
-import { firebaseAuth } from '@/utils/firebaseService';
+const checkIsValidEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 
 const LoginScreen = () => {
+  const { login, saveEmail, removeSavedEmail } = useAuthStore();
+  const savedEmail = useAuthStore.getState()?.savedEmail;
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
+  const [rememberMe, setRemember] = useState(false);
 
   const {
     reset,
     control,
+    setValue,
+    getValues,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -37,7 +45,13 @@ const LoginScreen = () => {
     resolver: zodResolver(LoginInSchema),
   });
 
-  const { login } = useAuthStore();
+  React.useEffect(() => {
+    if (savedEmail) {
+      setValue('email', savedEmail);
+      setRemember(true);
+    }
+  }, [savedEmail, setValue]);
+
   const onSubmit = async (data: SignInTypes) => {
     setLoading(true);
     try {
@@ -59,6 +73,20 @@ const LoginScreen = () => {
 
   const forgetPassHandler = () => {
     router.push(FORGET_PASSWORD);
+  };
+
+  const handleRememberToggle = () => {
+    const email = getValues().email;
+
+    if (!rememberMe) {
+      if (email && checkIsValidEmail(email)) {
+        saveEmail(email);
+      }
+    } else {
+      removeSavedEmail();
+    }
+
+    setRemember(!rememberMe);
   };
 
   useFocusEffect(
@@ -97,7 +125,7 @@ const LoginScreen = () => {
               )}
               name="email"
             />
-
+            <CheckBox checked={rememberMe} title="Remember me" onPress={handleRememberToggle} />
             <Controller
               control={control}
               rules={{ required: true }}
