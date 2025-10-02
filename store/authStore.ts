@@ -9,13 +9,21 @@ export const useAuthStore = create<any>()(
     persist(
       set => ({
         authStore: null,
+        savedEmail: null,
         logout: () => set(() => ({ authStore: null })),
         login: (user: any) => set(() => ({ authStore: user })),
         resetAuthStore: () => set(() => ({ authStore: null })),
+        saveEmail: (email: string) => set(() => ({ savedEmail: email })),
+        removeSavedEmail: () => set(() => ({ savedEmail: null })),
       }),
       {
         name: 'authStore',
         storage: createJSONStorage(() => zustandStorage),
+        onRehydrateStorage: () => state => {
+          // optional: log hydration
+          // eslint-disable-next-line no-console
+          console.log('hydrated state:', state);
+        },
       }
     )
   )

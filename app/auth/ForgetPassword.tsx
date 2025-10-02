@@ -12,7 +12,7 @@ import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
-import { getAuthErrorMessage } from 'utils/firebaseService';
+import { getFirebaseErrorMessage } from 'utils/firebaseService';
 import { ForgetPasswordSchema } from 'utils/schema';
 
 const ForgetPassword = () => {
@@ -48,7 +48,7 @@ const ForgetPassword = () => {
       router.back();
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
-        ToastError({ msg1: getAuthErrorMessage(error.code) });
+        ToastError({ msg1: getFirebaseErrorMessage(error.code) });
       }
     }
   };
