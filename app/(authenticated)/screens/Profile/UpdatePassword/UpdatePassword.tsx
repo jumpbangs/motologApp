@@ -9,7 +9,12 @@ import { router } from 'expo-router';
 import { Button, Icon, Input, Text, useTheme } from '@rneui/themed';
 
 import { FirebaseError } from 'firebase/app';
-import { EmailAuthProvider, getAuth, updatePassword } from 'firebase/auth';
+import {
+  EmailAuthProvider,
+  getAuth,
+  reauthenticateWithCredential,
+  updatePassword,
+} from 'firebase/auth';
 
 import { YStack } from 'components/_Stacks';
 import { userStore } from 'store/userStore';
@@ -40,14 +45,21 @@ const UpdatePasswordScreen = () => {
     setLoading(true);
     const { email, currentPass, newPassword } = resetData;
     try {
-      await EmailAuthProvider.credential(email, currentPass);
-      const user = getAuth().currentUser;
-      if (user) {
-        updatePassword(user, newPassword);
-        ToastSuccess({ msg1: 'Password updated !' });
-        reset();
-        router.back();
+      const currentUser = getAuth().currentUser;
+
+      if (!currentUser || !currentUser.email) {
+        throw new Error('No authenticated user found');
       }
+
+      const userCred = await EmailAuthProvider.credential(email, currentPass);
+
+      await reauthenticateWithCredential(currentUser, userCred);
+
+      await updatePassword(currentUser, newPassword);
+
+      ToastSuccess({ msg1: 'Password updated !!' });
+      reset();
+      router.back();
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
         ToastError({ msg1: getFirebaseErrorMessage(error.code) });

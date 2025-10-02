@@ -57,7 +57,7 @@ const LoginScreen = () => {
     try {
       const response = await signInWithEmailAndPassword(firebaseAuth, data.email, data.password);
       login(response);
-      ToastSuccess({ msg1: 'Welcome back !!', pos: 'bottom' });
+      ToastSuccess({ msg1: 'Welcome back !!' });
       router.push(HOME);
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
