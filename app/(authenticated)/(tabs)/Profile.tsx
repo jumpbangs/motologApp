@@ -12,7 +12,7 @@ import { signOut } from 'firebase/auth';
 import ProfileScreen from 'screens/Profile/ProfileScreen';
 import { useAuthStore } from 'store/authStore';
 import { zustandStorage } from 'utils/crossPlatformStorage';
-import { firebaseAuth, getAuthErrorMessage } from 'utils/firebaseService';
+import { firebaseAuth, getFirebaseErrorMessage } from 'utils/firebaseService';
 import { MAIN } from 'utils/router';
 
 const Profile = () => {
@@ -27,7 +27,7 @@ const Profile = () => {
       router.replace(MAIN);
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
-        ToastError({ msg1: getAuthErrorMessage(error.code) });
+        ToastError({ msg1: getFirebaseErrorMessage(error.code) });
       }
     }
   };

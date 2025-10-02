@@ -9,9 +9,12 @@ export const useAuthStore = create<any>()(
     persist(
       set => ({
         authStore: null,
+        savedEmail: '',
         logout: () => set(() => ({ authStore: null })),
         login: (user: any) => set(() => ({ authStore: user })),
         resetAuthStore: () => set(() => ({ authStore: null })),
+        saveEmail: (email: string) => set(() => ({ savedEmail: email })),
+        removeSavedEmail: () => ({ savedEmail: '' }),
       }),
       {
         name: 'authStore',

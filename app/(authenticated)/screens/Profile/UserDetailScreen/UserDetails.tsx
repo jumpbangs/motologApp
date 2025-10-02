@@ -17,7 +17,7 @@ import LeftIconInput from 'components/LeftIconInput';
 import ThemeSwitcher from 'components/ThemeSwitcher';
 import { userStore } from 'store/userStore';
 import { profileStyle } from 'styles/profileStyles';
-import { firebaseAuth, getAuthErrorMessage, userDocRef } from 'utils/firebaseService';
+import { firebaseAuth, getFirebaseErrorMessage, userDocRef } from 'utils/firebaseService';
 import { UpdateUserSchema } from 'utils/schema';
 
 const UserDetailsScreen = () => {
@@ -98,7 +98,7 @@ const UserDetailsScreen = () => {
       }
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
-        ToastError({ msg1: getAuthErrorMessage(error.code) });
+        ToastError({ msg1: getFirebaseErrorMessage(error.code) });
       }
     }
   };

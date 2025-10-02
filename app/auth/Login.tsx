@@ -14,7 +14,7 @@ import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
 import { useAuthStore } from 'store/authStore';
 import { SignInTypes } from 'types/authTypes';
-import { getAuthErrorMessage } from 'utils/firebaseService';
+import { getFirebaseErrorMessage } from 'utils/firebaseService';
 import { FORGET_PASSWORD, HOME, SIGN_UP } from 'utils/router';
 import { LoginInSchema } from 'utils/schema';
 
@@ -47,7 +47,7 @@ const LoginScreen = () => {
       router.push(HOME);
     } catch (error: unknown) {
       if (error instanceof FirebaseError) {
-        ToastError({ msg1: getAuthErrorMessage(error.code) });
+        ToastError({ msg1: getFirebaseErrorMessage(error.code) });
       }
     }
     setLoading(false);

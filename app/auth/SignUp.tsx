@@ -14,7 +14,7 @@ import { setDoc } from 'firebase/firestore';
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
 import { SignUpTypes } from 'types/authTypes';
-import { getAuthErrorMessage, userDocRef } from 'utils/firebaseService';
+import { getFirebaseErrorMessage, userDocRef } from 'utils/firebaseService';
 import { SignUpSchema } from 'utils/schema';
 
 const SignUp = () => {
@@ -66,7 +66,7 @@ const SignUp = () => {
     } catch (error: unknown) {
       setLoading(false);
       if (error instanceof FirebaseError) {
-        ToastError({ msg1: getAuthErrorMessage(error.code) });
+        ToastError({ msg1: getFirebaseErrorMessage(error.code) });
       }
     }
   };

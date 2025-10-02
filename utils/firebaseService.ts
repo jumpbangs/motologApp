@@ -49,7 +49,7 @@ const AuthErrorsCodes: { [key: string]: string } = {
   'auth/email-already-in-use': 'The email address is already in use by another account.',
 };
 
-export const getAuthErrorMessage = (code: string): string => {
+export const getFirebaseErrorMessage = (code: string): string => {
   if (AuthErrorsCodes[code]) {
     return AuthErrorsCodes[code];
   } else {
