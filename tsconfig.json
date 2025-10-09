@@ -10,6 +10,7 @@
       "theme/*": ["./theme/*"],
       "utils/*": ["./utils/*"],
       "styles/*": ["./styles/*"],
+      "assets/*": ["./assets/*"],
       "pages/*": ["./app/pages/*"],
       "services/*": ["./app/services/*"],
       "components/*": ["./app/components/*"],

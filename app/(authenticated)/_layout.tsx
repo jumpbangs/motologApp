@@ -18,6 +18,7 @@ import { userDocRef } from '@/utils/firebaseService';
 const AuthenticatedLayout = () => {
   const theme = useTheme();
   const authStore = useAuthStore.getState().authStore;
+
   const statusBarStyle = theme.theme.mode === 'dark' ? 'light' : 'dark';
 
   React.useEffect(() => {
