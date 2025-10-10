@@ -20,7 +20,10 @@
           "data": {
             "scheme": "motologapp"
           },
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ],
       "adaptiveIcon": {
@@ -47,7 +50,8 @@
         {
           "photosPermission": "The app accesses your photos to upload pictures to the server."
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
