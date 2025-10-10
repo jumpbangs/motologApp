@@ -1,20 +1,29 @@
 import React from 'react';
 import { ScrollView, View } from 'react-native';
-import { LineChart } from 'react-native-gifted-charts';
+import { BarChart, LineChart } from 'react-native-gifted-charts';
 import { Picker } from '@react-native-picker/picker';
 
 import { Text, useTheme } from '@rneui/themed';
 
 import { dashboardStyle } from 'styles/dashboardStyles';
 
-import fuelData from './fuelLog.json';
+import DashBoardInfoTile from '@/app/(authenticated)/screens/Home/components/DashBoardInfoTile';
 
 interface FuelEntry {
   date_filled: string;
   fuel_cost: number;
   fuel_per_km: number;
   total_kms_covered: number;
+  brand: string;
+  rate: number;
+  total_fuel_liters: number;
+  user_id: string | null;
 }
+
+type BarDataItem = {
+  value: number;
+  label: string;
+};
 
 const dataItems = [
   { label: 'Efficiency', value: 'efficiency' },
@@ -25,12 +34,13 @@ const dataItems = [
 const Dashboard = () => {
   const { theme } = useTheme();
   const [selectedValue, setSelectedValue] = React.useState<string>('efficiency');
+  const fuelLogs: Record<string, FuelEntry> = {};
 
   const formatFuelData = (
-    fuelData: Record<string, any>,
+    logs: Record<string, any>,
     valueKey: keyof Omit<FuelEntry, 'date_filled'>
   ) => {
-    return Object.values(fuelData)
+    return Object.values(logs)
       .sort((a, b) => new Date(b.date_filled).valueOf() - new Date(a.date_filled).valueOf())
       .map(item => ({
         value: Number(item[valueKey]),
@@ -42,9 +52,27 @@ const Dashboard = () => {
       }));
   };
 
-  const efficiency = formatFuelData(fuelData, 'fuel_per_km');
-  const rateOverTime = formatFuelData(fuelData, 'fuel_cost');
-  const distancePerFill = formatFuelData(fuelData, 'total_kms_covered');
+  const tallyBrandCount = (): BarDataItem[] => {
+    if (fuelLogs) {
+      const brands = Object.values(fuelLogs).map((entry: FuelEntry) => entry?.brand);
+
+      const countMap = brands.reduce((count: Record<string, number>, brand) => {
+        count[brand] = (count[brand] || 0) + 1;
+        return count;
+      }, {});
+
+      return Object.entries(countMap).map(([brand, count]) => ({
+        value: count,
+        label: brand,
+      }));
+    } else {
+      return [];
+    }
+  };
+
+  const efficiency = formatFuelData(fuelLogs, 'fuel_per_km');
+  const rateOverTime = formatFuelData(fuelLogs, 'fuel_cost');
+  const distancePerFill = formatFuelData(fuelLogs, 'total_kms_covered');
   const metricDataMap: any = {
     efficiency,
     rateOverTime,
@@ -52,42 +80,50 @@ const Dashboard = () => {
   };
 
   const selectedLabel = dataItems.find(item => item.value === selectedValue)?.label;
-
   return (
     <ScrollView style={{ marginVertical: 15 }}>
       <View style={dashboardStyle.container}>
         <Text h4 style={{ padding: 8, textAlign: 'center' }}>
           {selectedLabel}
         </Text>
-        <LineChart
-          curved
-          spacing={80}
-          height={250}
-          thickness={5}
-          curveType={1}
-          initialSpacing={30}
-          hideDataPoints={false}
-          color={theme.colors.primary}
-          data={metricDataMap[selectedValue]}
-          dataPointsColor={theme.colors.error}
-          // X-axis settings
-          xAxisThickness={1}
-          xAxisColor={theme.colors.foreground}
-          xAxisLabelTextStyle={{ color: theme.colors.foreground, fontSize: 12 }}
-          // Y-axis settings
-          yAxisThickness={1}
-          yAxisColor={theme.colors.foreground}
-          yAxisTextStyle={{ color: theme.colors.foreground, fontSize: 12 }}
-          // Optional
-          rulesType="dashed"
-          hideRules={false}
-          yAxisLabelWidth={30}
-          showVerticalLines={true}
-          showValuesAsDataPointsText
-          verticalLinesUptoDataPoint={true}
-          rulesColor={theme.colors.foreground}
-          verticalLinesColor={theme.colors.foreground}
-        />
+        {Object.values(fuelLogs).length > 0 ? (
+          <LineChart
+            curved
+            spacing={80}
+            height={250}
+            thickness={5}
+            curveType={1}
+            initialSpacing={30}
+            hideDataPoints={false}
+            color={theme.colors.primary}
+            data={metricDataMap[selectedValue]}
+            dataPointsColor={theme.colors.error}
+            // X-axis settings
+            xAxisThickness={1}
+            xAxisColor={theme.colors.foreground}
+            xAxisLabelTextStyle={{ color: theme.colors.foreground, fontSize: 12 }}
+            // Y-axis settings
+            yAxisThickness={1}
+            yAxisColor={theme.colors.foreground}
+            yAxisTextStyle={{ color: theme.colors.foreground, fontSize: 12 }}
+            // Optional
+            rulesType="dashed"
+            hideRules={false}
+            yAxisLabelWidth={30}
+            showVerticalLines={true}
+            showValuesAsDataPointsText
+            verticalLinesUptoDataPoint={true}
+            rulesColor={theme.colors.foreground}
+            verticalLinesColor={theme.colors.foreground}
+          />
+        ) : (
+          <View>
+            <Text h2 style={{ textAlign: 'center', marginVertical: 50 }}>
+              No data available to display
+            </Text>
+          </View>
+        )}
+
         <View style={{ ...dashboardStyle.pickerContainer, borderColor: theme.colors.primary }}>
           <Picker
             selectedValue={selectedValue}
@@ -101,49 +137,53 @@ const Dashboard = () => {
       </View>
       <View style={dashboardStyle.infoContainer}>
         {/* Avg Fuel and KM */}
-        <View style={dashboardStyle.infoRowContainer}>
-          <View
-            style={{ ...dashboardStyle.infoTileContainer, borderColor: theme.colors.foreground }}>
-            <Text h4 style={dashboardStyle.infoTitleTitle}>
-              Avg Fuel
-            </Text>
-            <Text style={dashboardStyle.infoTileData}>4.1 Liters</Text>
-          </View>
-          <View
-            style={{ ...dashboardStyle.infoTileContainer, borderColor: theme.colors.foreground }}>
-            <Text h4 style={dashboardStyle.infoTitleTitle}>
-              Avg KMs
-            </Text>
-            <Text style={dashboardStyle.infoTileData}>340 KM</Text>
-          </View>
-        </View>
+        <DashBoardInfoTile
+          infoTitle1="Avg Fuel"
+          infoValue1="8.2 Liters"
+          infoTitle2="Avg KMs"
+          infoValue2="340 KMs"
+        />
         {/*  */}
-        <View style={dashboardStyle.infoRowContainer}>
-          <View
-            style={{ ...dashboardStyle.infoTileContainer, borderColor: theme.colors.foreground }}>
-            <Text h4 style={dashboardStyle.infoTitleTitle}>
-              Avg Rate
-            </Text>
-            <Text style={{ ...dashboardStyle.infoTileData, color: theme.colors.primary }}>
-              4.1 Liters
-            </Text>
-          </View>
-          <View
-            style={{ ...dashboardStyle.infoTileContainer, borderColor: theme.colors.foreground }}>
-            <Text h4 style={dashboardStyle.infoTitleTitle}>
-              Total Distance
-            </Text>
-            <Text style={{ ...dashboardStyle.infoTileData, color: theme.colors.primary }}>
-              340 KM
-            </Text>
-          </View>
-        </View>
+        <DashBoardInfoTile
+          infoTitle1="Avg Rate"
+          infoValue1="8.2 Liters"
+          infoTitle2="Total KMs"
+          infoValue2="340 KMs"
+        />
       </View>
-      {/* <View style={dashboardStyle.addBtn}>
-        <Button onPress={addNewLog}>
-          <Text h4>Add new</Text>
-        </Button>
-      </View> */}
+      <View style={dashboardStyle.container}>
+        <Text h4 style={{ padding: 8, textAlign: 'center' }}>
+          Most Used Petrol Brand
+        </Text>
+        {Object.values(fuelLogs).length > 0 ? (
+          <BarChart
+            data={tallyBrandCount()}
+            // X-axis settings
+            xAxisThickness={1}
+            xAxisColor={theme.colors.foreground}
+            xAxisLabelTextStyle={{ color: theme.colors.foreground, fontSize: 12 }}
+            // Y-axis settings
+            yAxisThickness={1}
+            yAxisColor={theme.colors.foreground}
+            yAxisTextStyle={{ color: theme.colors.foreground, fontSize: 12 }}
+            // Optional
+            rulesType="dashed"
+            hideRules={false}
+            yAxisLabelWidth={30}
+            rulesColor={theme.colors.foreground}
+            verticalLinesColor={theme.colors.foreground}
+            showGradient
+            frontColor={theme.colors.primary}
+            gradientColor={theme.colors.foreground}
+          />
+        ) : (
+          <View>
+            <Text h2 style={{ textAlign: 'center', marginVertical: 50 }}>
+              No data available to display
+            </Text>
+          </View>
+        )}
+      </View>
     </ScrollView>
   );
 };
