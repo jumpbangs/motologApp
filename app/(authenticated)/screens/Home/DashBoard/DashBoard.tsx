@@ -6,26 +6,18 @@ import { Picker } from '@react-native-picker/picker';
 import { Text, useTheme } from '@rneui/themed';
 
 import { dashboardStyle } from 'styles/dashboardStyles';
+import { FuelEntry } from 'types/logsTypes';
 
-import DashBoardInfoTile from '@/app/(authenticated)/screens/Home/components/DashBoardInfoTile';
-
-interface FuelEntry {
-  date_filled: string;
-  fuel_cost: number;
-  fuel_per_km: number;
-  total_kms_covered: number;
-  brand: string;
-  rate: number;
-  total_fuel_liters: number;
-  user_id: string | null;
-}
+import DashBoardInfoTile from '../components/DashBoardInfoTile';
 
 type BarDataItem = {
   value: number;
   label: string;
 };
 
-const dataItems = [
+type MetricKey = 'efficiency' | 'rateOverTime' | 'distancePerFill';
+
+const dataItems: { label: string; value: MetricKey }[] = [
   { label: 'Efficiency', value: 'efficiency' },
   { label: 'Rate Over Time', value: 'rateOverTime' },
   { label: 'Distance Per Fill', value: 'distancePerFill' },
@@ -33,23 +25,24 @@ const dataItems = [
 
 const Dashboard = () => {
   const { theme } = useTheme();
-  const [selectedValue, setSelectedValue] = React.useState<string>('efficiency');
+  const [selectedValue, setSelectedValue] = React.useState<MetricKey>('efficiency');
   const fuelLogs: Record<string, FuelEntry> = {};
 
-  const formatFuelData = (
-    logs: Record<string, any>,
-    valueKey: keyof Omit<FuelEntry, 'date_filled'>
-  ) => {
-    return Object.values(logs)
-      .sort((a, b) => new Date(b.date_filled).valueOf() - new Date(a.date_filled).valueOf())
-      .map(item => ({
-        value: Number(item[valueKey]),
-        label: new Date(item.date_filled).toLocaleDateString('en-US', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }),
-      }));
+  const sortedLogs = React.useMemo(() => {
+    return Object.values(fuelLogs).sort(
+      (logA, logB) => new Date(logB.date_filled).valueOf() - new Date(logA.date_filled).valueOf()
+    );
+  }, [fuelLogs]);
+
+  const formatFuelData = (logs: FuelEntry[], valueKey: keyof Omit<FuelEntry, 'date_filled'>) => {
+    return logs.map(item => ({
+      value: Number(item[valueKey]),
+      label: new Date(item.date_filled).toLocaleDateString('en-US', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      }),
+    }));
   };
 
   const tallyBrandCount = (): BarDataItem[] => {
@@ -70,14 +63,14 @@ const Dashboard = () => {
     }
   };
 
-  const efficiency = formatFuelData(fuelLogs, 'fuel_per_km');
-  const rateOverTime = formatFuelData(fuelLogs, 'fuel_cost');
-  const distancePerFill = formatFuelData(fuelLogs, 'total_kms_covered');
-  const metricDataMap: any = {
-    efficiency,
-    rateOverTime,
-    distancePerFill,
-  };
+  const metricDataMap: Record<MetricKey, { value: number; label: string }[]> = React.useMemo(
+    () => ({
+      efficiency: formatFuelData(sortedLogs, 'fuel_per_km'),
+      rateOverTime: formatFuelData(sortedLogs, 'fuel_cost'),
+      distancePerFill: formatFuelData(sortedLogs, 'total_kms_covered'),
+    }),
+    [sortedLogs]
+  );
 
   const selectedLabel = dataItems.find(item => item.value === selectedValue)?.label;
   return (
