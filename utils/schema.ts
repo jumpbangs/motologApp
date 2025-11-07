@@ -47,3 +47,21 @@ export const UpdateUserSchema = z.object({
     .or(z.literal(''))
     .optional(),
 });
+
+export const LogSchema = z.object({
+  location: z.string().min(3, 'Name should at least be 3 characters').or(z.literal('')).optional(),
+  brand: z.string().min(3, 'Name should at least be 3 characters').or(z.literal('')).optional(),
+  rate: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, 'Enter a valid number (max 2 decimals)')
+    .transform(Number),
+  total_kms_covered: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, 'Enter a valid number (max 2 decimals)')
+    .transform(Number),
+  total_fuel_liters: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, 'Enter a valid number (max 2 decimals)')
+    .transform(Number),
+  discount_used: z.boolean(),
+});
