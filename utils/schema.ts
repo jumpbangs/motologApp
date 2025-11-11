@@ -50,7 +50,7 @@ export const UpdateUserSchema = z.object({
 
 export const LogSchema = z.object({
   location: z.string().min(3, 'Name should at least be 3 characters').or(z.literal('')).optional(),
-  brand: z.string().min(3, 'Name should at least be 3 characters').or(z.literal('')).optional(),
+  brand: z.string().min(2, 'Name should at least be 2 characters').or(z.literal('')).optional(),
   rate: z
     .string()
     .regex(/^\d+(\.\d{1,2})?$/, 'Enter a valid number (max 2 decimals)')

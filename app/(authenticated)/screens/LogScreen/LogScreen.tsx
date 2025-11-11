@@ -8,25 +8,32 @@ import { router } from 'expo-router';
 import { Button, Icon, Text } from '@rneui/themed';
 
 import TextIcon from 'components/TextIcon';
+import { fetchUserLogs } from 'services/logServices';
+import { userStore } from 'store/userStore';
 import { FuelEntry } from 'types/logsTypes';
 import { convertDateToFmt, DAY_MONTH_YEAR_FMT } from 'utils/date';
 
-import fuelLogs from '../Home/DashBoard/fuelLog.json';
-
+// import fuelLogs from '../Home/DashBoard/fuelLog.json';
 import DetailModal from './components/DetailModal';
 
 const LogScreen = () => {
+  const user = userStore.getState().user;
+  const [userLogs, setUserLogs] = React.useState<FuelEntry[] | []>([]);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [selectedItem, setSelectedItem] = React.useState<FuelEntry | null>(null);
-  const fuelData = Object.values(fuelLogs).map((value, index) => {
-    return {
-      id: index,
-      ...value,
+
+  React.useEffect(() => {
+    const getUserLogs = async () => {
+      if (user != null) {
+        const logs: FuelEntry[] = await fetchUserLogs(user.uid);
+        setUserLogs(logs);
+      }
     };
-  });
+
+    getUserLogs();
+  }, [user]);
 
   const renderItem = (logData: FuelEntry) => {
-    // console.log(logData);
     return (
       <TouchableOpacity
         style={{ height: 80, width: '100%' }}
@@ -89,13 +96,19 @@ const LogScreen = () => {
             modalDetails={selectedItem}
             modalHandler={() => setModalVisible(!modalVisible)}
           />
-          <LegendList
-            data={fuelData}
-            renderItem={({ item }) => renderItem(item)}
-            keyExtractor={item => item.id.toString()}
-            recycleItems
-            drawDistance={100}
-          />
+          {Array.isArray(userLogs) && userLogs.length === 0 ? (
+            <View>
+              <Text>No data</Text>
+            </View>
+          ) : (
+            <LegendList
+              data={userLogs}
+              renderItem={({ item }) => renderItem(item)}
+              keyExtractor={item => item.id.toString()}
+              recycleItems
+              drawDistance={100}
+            />
+          )}
         </View>
       </SafeAreaView>
     </SafeAreaProvider>

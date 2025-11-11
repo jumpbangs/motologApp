@@ -8,6 +8,9 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import { Button, CheckBox, Icon, Input, Text, useTheme } from '@rneui/themed';
 
 import { XStack, YStack } from 'components/_Stacks';
+import { addNewLog } from 'services/logServices';
+import { userStore } from 'store/userStore';
+import { getTodayDate } from 'utils/date';
 import { LogSchema } from 'utils/schema';
 
 interface LogData {
@@ -21,7 +24,9 @@ interface LogData {
 
 const AddLogPage = () => {
   const theme = useTheme();
+  const user = userStore.getState().user;
   const headerHeight = useHeaderHeight() + (StatusBar.currentHeight ?? 0);
+
   const {
     control,
     handleSubmit,
@@ -39,8 +44,15 @@ const AddLogPage = () => {
   });
 
   const submitHandler = async (logData: LogData) => {
-    // eslint-disable-next-line no-console
-    console.log(typeof logData.total_fuel_liters);
+    const fuelCost = logData.rate * logData.total_fuel_liters;
+    const newLogData = {
+      ...logData,
+      userId: user?.uid,
+      fuel_cost: fuelCost,
+      date_filled: getTodayDate(),
+    };
+
+    await addNewLog(newLogData);
   };
 
   return (
