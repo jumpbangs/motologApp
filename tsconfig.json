@@ -12,7 +12,7 @@
       "styles/*": ["./styles/*"],
       "assets/*": ["./assets/*"],
       "pages/*": ["./app/pages/*"],
-      "services/*": ["./app/services/*"],
+      "services/*": ["./services/*"],
       "components/*": ["./app/components/*"],
       "screens/*": ["./app/(authenticated)/screens/*"],
       "@firebase/auth": ["./node_modules/@firebase/auth/dist/index.rn.d.ts"]

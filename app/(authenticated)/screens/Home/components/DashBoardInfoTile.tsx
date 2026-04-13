@@ -1,5 +1,7 @@
 import React, { View } from 'react-native';
 
+import { BlurView } from 'expo-blur';
+
 import { Text, useTheme } from '@rneui/themed';
 
 import { dashboardStyle } from 'styles/dashboardStyles';
@@ -22,18 +24,24 @@ const DashBoardInfoTile = ({
   return (
     <>
       <View style={dashboardStyle.infoRowContainer}>
-        <View style={{ ...dashboardStyle.infoTileContainer, borderColor: theme.colors.foreground }}>
+        <BlurView
+          style={{ ...dashboardStyle.infoTileContainer, borderColor: theme.colors.foreground }}
+          intensity={30}
+          tint={theme.mode === 'dark' ? 'light' : 'dark'}>
           <Text h4 style={dashboardStyle.infoTitleTitle}>
             {infoTitle1}
           </Text>
           <Text style={dashboardStyle.infoTileData}>{infoValue1}</Text>
-        </View>
-        <View style={{ ...dashboardStyle.infoTileContainer, borderColor: theme.colors.foreground }}>
+        </BlurView>
+        <BlurView
+          style={{ ...dashboardStyle.infoTileContainer, borderColor: theme.colors.foreground }}
+          intensity={30}
+          tint={theme.mode === 'dark' ? 'light' : 'dark'}>
           <Text h4 style={dashboardStyle.infoTitleTitle}>
             {infoTitle2}
           </Text>
           <Text style={dashboardStyle.infoTileData}>{infoValue2}</Text>
-        </View>
+        </BlurView>
       </View>
     </>
   );

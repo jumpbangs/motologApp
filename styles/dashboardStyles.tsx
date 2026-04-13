@@ -31,16 +31,16 @@ export const dashboardStyle = StyleSheet.create({
     padding: 10,
     width: 'auto',
     borderWidth: 1,
-    borderRadius: 4,
+    borderRadius: 8,
     borderStyle: 'solid',
   },
   infoTitleTitle: {
     fontSize: 24,
-    textAlign: 'center',
+    textAlign: 'left',
   },
   infoTileData: {
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: 'left',
   },
   addBtn: {
     flex: 1,

@@ -1,7 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
 
-import { Text, useTheme } from '@rneui/themed';
+import { useTheme } from '@rneui/themed';
+
+import LogScreen from 'screens/LogScreen';
 
 const Logs = () => {
   const { theme } = useTheme();
@@ -12,7 +14,7 @@ const Logs = () => {
         flex: 1,
         backgroundColor: theme.colors.background,
       }}>
-      <Text>Logs</Text>
+      <LogScreen />
     </View>
   );
 };
