@@ -5,13 +5,20 @@ import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useHeaderHeight } from '@react-navigation/elements';
 
+import { router } from 'expo-router';
+
 import { Button, CheckBox, Icon, Input, Text, useTheme } from '@rneui/themed';
+
+import { FirebaseError } from 'firebase/app';
 
 import { XStack, YStack } from 'components/_Stacks';
 import { addNewLog } from 'services/logServices';
 import { userStore } from 'store/userStore';
 import { getTodayDate } from 'utils/date';
 import { LogSchema } from 'utils/schema';
+
+import { ToastError, ToastSuccess } from '@/app/components/_Toast';
+import { getFirebaseErrorMessage } from '@/utils/firebaseService';
 
 interface LogData {
   location?: string;
@@ -25,6 +32,7 @@ interface LogData {
 const AddLogPage = () => {
   const theme = useTheme();
   const user = userStore.getState().user;
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const headerHeight = useHeaderHeight() + (StatusBar.currentHeight ?? 0);
 
   const {
@@ -44,6 +52,8 @@ const AddLogPage = () => {
   });
 
   const submitHandler = async (logData: LogData) => {
+    if (!user) return;
+    setIsSubmitting(true);
     const fuelCost = logData.rate * logData.total_fuel_liters;
     const newLogData = {
       ...logData,
@@ -52,7 +62,17 @@ const AddLogPage = () => {
       date_filled: getTodayDate(),
     };
 
-    await addNewLog(newLogData);
+    try {
+      await addNewLog(newLogData);
+      ToastSuccess({ msg1: `Added fuel log for ${getTodayDate()}` });
+      router.back();
+      setIsSubmitting(false);
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        ToastError({ msg1: getFirebaseErrorMessage(error.code) });
+        setIsSubmitting(false);
+      }
+    }
   };
 
   return (
@@ -187,7 +207,7 @@ const AddLogPage = () => {
               </XStack>
             </YStack>
 
-            <Button size="md" onPress={() => handleSubmit(submitHandler)()}>
+            <Button size="md" onPress={() => handleSubmit(submitHandler)()} disabled={isSubmitting}>
               Save
             </Button>
           </View>

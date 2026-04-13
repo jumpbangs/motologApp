@@ -3,6 +3,8 @@ import { Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } f
 
 import { Icon, Text, useTheme } from '@rneui/themed';
 
+import { ToastSuccess } from 'components/_Toast';
+import { deleteUserLog } from 'services/logServices';
 import { FuelEntry } from 'types/logsTypes';
 
 interface DetailModalProps {
@@ -11,8 +13,15 @@ interface DetailModalProps {
   modalDetails?: FuelEntry | null;
 }
 
-const DetailModal = ({ modalVisible, modalHandler, modalDetails }: DetailModalProps) => {
+const DeleteModal = ({ modalVisible, modalHandler, modalDetails = null }: DetailModalProps) => {
   const { theme } = useTheme();
+
+  const deleteLogHandler = async () => {
+    if (!modalDetails) return;
+    await deleteUserLog(modalDetails.id);
+    modalHandler();
+    ToastSuccess({ msg1: 'Log deleted successfully' });
+  };
 
   return (
     <>
@@ -27,18 +36,13 @@ const DetailModal = ({ modalVisible, modalHandler, modalDetails }: DetailModalPr
               <View style={{ ...style.modalTitleHeader }}>
                 <Text h4>Log Details</Text>
                 <TouchableOpacity
-                  style={{ ...style.button, backgroundColor: theme.colors.primary }}
-                  onPress={modalHandler}>
-                  <Icon name="close" type="material" size={20} />
+                  style={{ ...style.button, backgroundColor: theme.colors.error }}
+                  onPress={deleteLogHandler}>
+                  <Icon name="delete" type="material" size={20} />
                 </TouchableOpacity>
               </View>
               <View style={{ flexDirection: 'column', marginTop: 20, width: 300 }}>
-                <Text>Date filled: {modalDetails?.date_filled}</Text>
-                <Text>Discount used: {modalDetails?.discount_used}</Text>
-                <Text>Fuel cost: {modalDetails?.fuel_cost}</Text>
-                <Text>Rate : {modalDetails?.rate}</Text>
-                <Text>Total liters : {modalDetails?.total_fuel_liters}</Text>
-                <Text>Total KMs : {modalDetails?.total_kms_covered}</Text>
+                <Text>Do you wish to delete the following log ?</Text>
               </View>
             </View>
           </View>
@@ -83,4 +87,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default DetailModal;
+export default DeleteModal;
