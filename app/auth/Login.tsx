@@ -6,12 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { router, useFocusEffect } from 'expo-router';
 
-import { Button, CheckBox, Icon, Input, Text } from '@rneui/themed';
+import { CheckBox, Icon, Input, Text } from '@rneui/themed';
 
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
+import LinearGradientBtn from 'components/LinearGradientBtn';
 import { useAuthStore } from 'store/authStore';
 import { SignInTypes } from 'types/authTypes';
 import { firebaseAuth, getFirebaseErrorMessage } from 'utils/firebaseService';
@@ -105,18 +106,21 @@ const LoginScreen = () => {
         justifyContent: 'center',
       }}>
       <YStack style={{ gap: 10 }}>
-        <XStack style={{ justifyContent: 'center' }}>
-          <Text h1>MotoLog App</Text>
-        </XStack>
-        <XStack style={{ justifyContent: 'center' }}>
-          <View style={{ gap: 4, width: 300 }}>
+        <YStack style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Text h1>MotoLog</Text>
+          <Text>Track your ride, fuel your journey</Text>
+        </YStack>
+        <XStack style={{ justifyContent: 'center', marginTop: 20 }}>
+          <View style={{ gap: 4, width: 330 }}>
             <Controller
               control={control}
               rules={{ required: true }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   style={{ flex: 1, minHeight: 4 }}
-                  placeholder="Email"
+                  inputContainerStyle={{ borderRadius: 8 }}
+                  label="Email"
+                  placeholder="Enter your email"
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
@@ -132,16 +136,19 @@ const LoginScreen = () => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   style={{ flex: 1, minHeight: 4 }}
+                  inputContainerStyle={{ borderRadius: 8 }}
+                  rightIconContainerStyle={{ marginRight: 8 }}
                   secureTextEntry={!showPass}
-                  placeholder="Password"
+                  label="Password"
+                  placeholder="Enter your password"
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
                   errorMessage={errors.password?.message}
                   rightIcon={
                     <Icon
-                      name={showPass ? 'visibility' : 'visibility-off'}
-                      type="material"
+                      name={showPass ? 'eye-outline' : 'eye-off-outline'}
+                      type="material-community"
                       onPress={() => setShowPass(!showPass)}
                     />
                   }
@@ -149,9 +156,11 @@ const LoginScreen = () => {
               )}
               name="password"
             />
-            <Button size="md" onPress={handleSubmit(onSubmit)} loading={loading}>
-              Sign In
-            </Button>
+            <LinearGradientBtn
+              btnTitle="Sign In"
+              handleSubmit={handleSubmit(onSubmit)}
+              loading={loading}
+            />
           </View>
         </XStack>
         <XStack style={{ justifyContent: 'space-evenly', gap: 8 }}>

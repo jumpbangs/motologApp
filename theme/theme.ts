@@ -4,6 +4,10 @@ import { createTheme } from '@rneui/themed';
 
 import { gruvboxDark, gruvboxLight } from './colors';
 
+const MANROPE_REG = 'Manrope-Regular';
+const MANROPE_MED = 'Manrope-Medium';
+const SPACE_MEDIUM = 'SpaceGrotesk-Medium';
+
 export const getGruvboxTheme = (mode: 'light' | 'dark') =>
   createTheme({
     lightColors: {
@@ -34,6 +38,25 @@ export const getGruvboxTheme = (mode: 'light' | 'dark') =>
       Text: (props, theme) => ({
         style: {
           color: theme.colors.foreground,
+          fontFamily: MANROPE_REG,
+        },
+        h1Style: {
+          fontSize: 40,
+          fontFamily: SPACE_MEDIUM,
+        },
+        h2Style: {
+          fontFamily: SPACE_MEDIUM,
+        },
+        h3Style: {
+          fontFamily: SPACE_MEDIUM,
+        },
+        h4Style: {
+          fontFamily: SPACE_MEDIUM,
+        },
+      }),
+      Button: () => ({
+        titleStyle: {
+          fontFamily: 'Manrope-Medium',
         },
       }),
       Input: (props, theme) => ({
@@ -49,6 +72,7 @@ export const getGruvboxTheme = (mode: 'light' | 'dark') =>
         },
         inputStyle: {
           color: theme.colors.foreground,
+          fontFamily: MANROPE_MED,
         },
         inputContainerStyle: {
           borderRadius: 4,
