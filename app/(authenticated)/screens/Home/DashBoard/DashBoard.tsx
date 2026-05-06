@@ -128,22 +128,18 @@ const Dashboard = () => {
           </Picker>
         </View>
       </View>
-      <View style={dashboardStyle.infoContainer}>
-        {/* Avg Fuel and KM */}
-        <DashBoardInfoTile
-          infoTitle1="Avg Fuel"
-          infoValue1="8.2 Liters"
-          infoTitle2="Avg KMs"
-          infoValue2="340 KMs"
-        />
-        {/*  */}
-        <DashBoardInfoTile
-          infoTitle1="Avg Rate"
-          infoValue1="8.2 Liters"
-          infoTitle2="Total KMs"
-          infoValue2="340 KMs"
-        />
+
+      <View style={dashboardStyle.infoColContainer}>
+        <View style={dashboardStyle.infoRowContainer}>
+          <DashBoardInfoTile infoTitle="Avg Fuel" infoValue="8.2 Liters" />
+          <DashBoardInfoTile infoTitle="Avg KMs" infoValue="340 KMs" />
+        </View>
+        <View style={dashboardStyle.infoRowContainer}>
+          <DashBoardInfoTile infoTitle="Avg Rate" infoValue="8.2 Liters" />
+          <DashBoardInfoTile infoTitle="Total KMs" infoValue="340 KMs" />
+        </View>
       </View>
+
       <View style={dashboardStyle.container}>
         <Text h4 style={{ padding: 8, textAlign: 'center' }}>
           Most Used Petrol Brand

@@ -1,44 +1,37 @@
-// gruvboxColors.ts
-export const gruvboxDark = {
-  background: '#141311',
-  foreground: '#E6E2DE',
-  card: '#1D1B19',
-  cardForeground: '#E6E2DE',
-  popover: '#141311',
-  popoverForeground: '#E6E2DE',
-  primary: '#FFB300',
-  primaryForeground: '#141311',
-  secondary: '#242220',
-  secondaryForeground: '#E6E2DE',
-  muted: '#2B2A27',
-  mutedForeground: '#9A9590',
-  accent: '#2B2A27',
-  accentForeground: '#E6E2DE',
-  destructive: '#990000',
-  destructiveForeground: '#E6E2DE',
-  border: '#363432',
-  input: '#4A4640',
-  ring: '#FFB300',
+import { Platform } from 'react-native';
+
+export const motologBrand = {
+  honey: '#E8B255', // primary
+  honeyHover: '#D9A03F', // primary pressed
+  honeyInk: '#4A3A1A', // text on primary
+  honeySoft: 'rgba(232, 178, 85, 0.14)',
+
+  ember: '#E07A52', // secondary
+  emberInk: '#3A1B10',
+
+  success: '#4FB286',
+  warning: '#E8B255',
+  danger: '#D85A45',
+  info: '#5B9DD9',
 };
 
-export const gruvboxLight = {
-  background: '#FFD79B',
-  foreground: '#141311',
-  card: '#FFE8C0',
-  cardForeground: '#141311',
-  popover: '#FFD79B',
-  popoverForeground: '#141311',
-  primary: '#FFB300',
-  primaryForeground: '#141311',
-  secondary: '#E6E2DE',
-  secondaryForeground: '#141311',
-  muted: '#C89430',
-  mutedForeground: '#4A4640',
-  accent: '#C89430',
-  accentForeground: '#141311',
-  destructive: '#990000',
-  destructiveForeground: '#E6E2DE',
-  border: '#C89430',
-  input: '#FFE8C0',
-  ring: '#FFB300',
+export const motologSpacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 };
+export const motologRadii = { sm: 8, md: 12, lg: 14, xl: 18, pill: 999 };
+
+export const motologFonts = {
+  ui: Platform.select({
+    ios: 'SpaceGrotesk-Regular',
+    android: 'SpaceGrotesk-Regular',
+    default: 'System',
+  }),
+  uiBold: Platform.select({
+    ios: 'SpaceGrotesk-Bold',
+    android: 'SpaceGrotesk-Bold',
+    default: 'System',
+  }),
+  mono: Platform.select({
+    ios: 'Manrope-Regular',
+    android: 'Manrope-Regular',
+    default: 'Menlo',
+  }),
 };

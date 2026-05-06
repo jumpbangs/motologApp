@@ -7,43 +7,33 @@ import { Text, useTheme } from '@rneui/themed';
 import { dashboardStyle } from 'styles/dashboardStyles';
 
 interface DashBoardInfoTitleProps {
-  infoTitle1: string;
-  infoValue1?: string;
-  infoTitle2: string;
-  infoValue2?: string;
+  infoTitle: string;
+  infoValue?: string;
 }
 
-const DashBoardInfoTile = ({
-  infoTitle1,
-  infoValue1,
-  infoTitle2,
-  infoValue2,
-}: DashBoardInfoTitleProps) => {
+const DashBoardInfoTile = ({ infoTitle, infoValue }: DashBoardInfoTitleProps) => {
   const { theme } = useTheme();
 
   return (
-    <>
-      <View style={dashboardStyle.infoRowContainer}>
-        <BlurView
-          style={{ ...dashboardStyle.infoTileContainer, borderColor: theme.colors.foreground }}
-          intensity={30}
-          tint={theme.mode === 'dark' ? 'light' : 'dark'}>
-          <Text h4 style={dashboardStyle.infoTitleTitle}>
-            {infoTitle1}
-          </Text>
-          <Text style={dashboardStyle.infoTileData}>{infoValue1}</Text>
-        </BlurView>
-        <BlurView
-          style={{ ...dashboardStyle.infoTileContainer, borderColor: theme.colors.foreground }}
-          intensity={30}
-          tint={theme.mode === 'dark' ? 'light' : 'dark'}>
-          <Text h4 style={dashboardStyle.infoTitleTitle}>
-            {infoTitle2}
-          </Text>
-          <Text style={dashboardStyle.infoTileData}>{infoValue2}</Text>
-        </BlurView>
-      </View>
-    </>
+    <View
+      style={{
+        width: '48%',
+        borderRadius: 12,
+        flexDirection: 'row',
+      }}>
+      <View style={{ width: 5, backgroundColor: theme.colors.primary, borderRadius: 12 }} />
+      <BlurView
+        style={{
+          ...dashboardStyle.infoTileContainer,
+        }}
+        intensity={20}
+        tint={theme.mode === 'dark' ? 'light' : 'dark'}>
+        <Text h4 style={dashboardStyle.infoTitleTitle}>
+          {infoTitle}
+        </Text>
+        <Text style={dashboardStyle.infoTileData}>{infoValue}</Text>
+      </BlurView>
+    </View>
   );
 };
 

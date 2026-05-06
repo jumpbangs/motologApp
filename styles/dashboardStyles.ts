@@ -14,25 +14,22 @@ export const dashboardStyle = StyleSheet.create({
     borderRadius: 5,
     borderStyle: 'solid',
   },
-  infoContainer: {
-    gap: 30,
+  infoColContainer: {
+    gap: 10,
     paddingHorizontal: 10,
     flexDirection: 'column',
   },
   infoRowContainer: {
-    gap: 20,
+    gap: 10,
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'space-between',
   },
   infoTileContainer: {
     flex: 1,
-    gap: 10,
     padding: 10,
     width: 'auto',
-    borderWidth: 1,
-    borderRadius: 8,
-    borderStyle: 'solid',
+    borderRadius: 12,
   },
   infoTitleTitle: {
     fontSize: 24,
