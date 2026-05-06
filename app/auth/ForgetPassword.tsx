@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { FirebaseError } from '@firebase/util';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { router, useFocusEffect } from 'expo-router';
 
-import { Button, Input, Text } from '@rneui/themed';
+import { Input, Text } from '@rneui/themed';
 
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
+import LinearGradientBtn from 'components/LinearGradientBtn';
 import { getFirebaseErrorMessage } from 'utils/firebaseService';
 import { ForgetPasswordSchema } from 'utils/schema';
 
@@ -54,20 +55,23 @@ const ForgetPassword = () => {
   };
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <YStack style={{ gap: 10 }}>
         <XStack style={{ justifyContent: 'center' }}>
           <Text h1>Forget Password</Text>
         </XStack>
         <XStack style={{ justifyContent: 'center' }}>
-          <View style={{ gap: 4, minWidth: 300 }}>
+          <View style={{ gap: 4, minWidth: 330 }}>
             <Controller
               control={control}
               rules={{ required: true }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   style={{ flex: 1, minHeight: 16 }}
-                  placeholder="Email"
+                  placeholder="Enter your email"
+                  label="Email"
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
@@ -77,16 +81,18 @@ const ForgetPassword = () => {
               name="email"
             />
 
-            <Button size="md" onPress={handleSubmit(onSubmit)} loading={loading}>
-              Reset Password
-            </Button>
-            <Button size="md" onPress={() => router.back()}>
-              Go Back
-            </Button>
+            <View style={{ gap: 12 }}>
+              <LinearGradientBtn
+                btnTitle="Reset Password"
+                handleSubmit={handleSubmit(onSubmit)}
+                loading={loading}
+              />
+              <LinearGradientBtn btnTitle="Go Back" handleSubmit={() => router.back()} />
+            </View>
           </View>
         </XStack>
       </YStack>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

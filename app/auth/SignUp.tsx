@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { FirebaseError } from '@firebase/util';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { router, useFocusEffect } from 'expo-router';
 
-import { Button, Icon, Input, Text } from '@rneui/themed';
+import { Icon, Input, Text } from '@rneui/themed';
 
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { setDoc } from 'firebase/firestore';
 
 import { XStack, YStack } from 'components/_Stacks';
 import { ToastError, ToastSuccess } from 'components/_Toast';
+import LinearGradientBtn from 'components/LinearGradientBtn';
 import { SignUpTypes } from 'types/authTypes';
 import { getFirebaseErrorMessage, userDocRef } from 'utils/firebaseService';
 import { SignUpSchema } from 'utils/schema';
@@ -72,7 +73,8 @@ const SignUp = () => {
   };
 
   return (
-    <View
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{
         flex: 1,
         alignItems: 'center',
@@ -83,14 +85,15 @@ const SignUp = () => {
           <Text h1>Sign Up</Text>
         </XStack>
         <XStack style={{ justifyContent: 'center' }}>
-          <View style={{ gap: 4, minWidth: 300 }}>
+          <View style={{ gap: 4, minWidth: 330 }}>
             <Controller
               control={control}
               rules={{ required: true }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   style={{ flex: 1, minHeight: 16 }}
-                  placeholder="Email"
+                  label="Email"
+                  placeholder="Enter your email"
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
@@ -105,7 +108,8 @@ const SignUp = () => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   style={{ flex: 1, minHeight: 16 }}
-                  placeholder="Password"
+                  placeholder="Enter your password"
+                  label="Password"
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
@@ -113,8 +117,8 @@ const SignUp = () => {
                   errorMessage={errors.password?.message}
                   rightIcon={
                     <Icon
-                      name={showPass.pass ? 'visibility' : 'visibility-off'}
-                      type="material"
+                      name={showPass.pass ? 'eye-outline' : 'eye-off-outline'}
+                      type="material-community"
                       onPress={() => setShowPass(prev => ({ ...prev, pass: !prev.pass }))}
                     />
                   }
@@ -130,7 +134,8 @@ const SignUp = () => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   style={{ flex: 1, minHeight: 16 }}
-                  placeholder="Repeat password"
+                  label="Repeat Password"
+                  placeholder="Repeat your password"
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
@@ -138,8 +143,8 @@ const SignUp = () => {
                   errorMessage={errors.repeat_pass?.message}
                   rightIcon={
                     <Icon
-                      name={showPass.repeat ? 'visibility' : 'visibility-off'}
-                      type="material"
+                      name={showPass.repeat ? 'eye-outline' : 'eye-off-outline'}
+                      type="material-community"
                       onPress={() => setShowPass(prev => ({ ...prev, repeat: !prev.repeat }))}
                     />
                   }
@@ -147,16 +152,18 @@ const SignUp = () => {
               )}
               name="repeat_pass"
             />
-            <Button size="md" onPress={handleSubmit(onSubmit)} loading={loading}>
-              Sign Up
-            </Button>
-            <Button size="md" onPress={() => router.back()}>
-              Go Back
-            </Button>
+            <View style={{ gap: 12 }}>
+              <LinearGradientBtn
+                btnTitle="Sign Up"
+                handleSubmit={handleSubmit(onSubmit)}
+                loading={loading}
+              />
+              <LinearGradientBtn btnTitle="Go Back" handleSubmit={() => router.back()} />
+            </View>
           </View>
         </XStack>
       </YStack>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

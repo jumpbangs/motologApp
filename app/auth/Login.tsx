@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { FirebaseError } from '@firebase/util';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { router, useFocusEffect } from 'expo-router';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import { CheckBox, Icon, Input, Text } from '@rneui/themed';
 
@@ -99,26 +100,34 @@ const LoginScreen = () => {
   );
 
   return (
-    <View
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
       }}>
       <YStack style={{ gap: 10 }}>
-        <YStack style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Text h1>MotoLog</Text>
+        <YStack style={{ gap: 14, alignItems: 'flex-start', marginLeft: 10 }}>
+          <XStack style={{ gap: 10 }}>
+            <MaterialIcons
+              name="speed"
+              size={32}
+              color="black"
+              style={{ backgroundColor: '#FFB300', borderRadius: 8 }}
+            />
+            <Text h1>MotoLog</Text>
+          </XStack>
           <Text>Track your ride, fuel your journey</Text>
         </YStack>
         <XStack style={{ justifyContent: 'center', marginTop: 20 }}>
-          <View style={{ gap: 4, width: 330 }}>
+          <View style={{ gap: 1, width: 330 }}>
             <Controller
               control={control}
               rules={{ required: true }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   style={{ flex: 1, minHeight: 4 }}
-                  inputContainerStyle={{ borderRadius: 8 }}
                   label="Email"
                   placeholder="Enter your email"
                   onChangeText={onChange}
@@ -136,7 +145,6 @@ const LoginScreen = () => {
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   style={{ flex: 1, minHeight: 4 }}
-                  inputContainerStyle={{ borderRadius: 8 }}
                   rightIconContainerStyle={{ marginRight: 8 }}
                   secureTextEntry={!showPass}
                   label="Password"
@@ -163,12 +171,12 @@ const LoginScreen = () => {
             />
           </View>
         </XStack>
-        <XStack style={{ justifyContent: 'space-evenly', gap: 8 }}>
+        <XStack style={{ justifyContent: 'space-evenly', gap: 8, marginTop: 10 }}>
           <Text onPress={signUpHandler}>Sign Up</Text>
           <Text onPress={forgetPassHandler}>Forget password</Text>
         </XStack>
       </YStack>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

@@ -75,7 +75,7 @@ export const getGruvboxTheme = (mode: 'light' | 'dark') =>
           fontFamily: MANROPE_MED,
         },
         inputContainerStyle: {
-          borderRadius: 4,
+          borderRadius: 14,
           borderWidth: 1,
           borderStyle: 'solid',
           borderColor: theme.colors.border,
