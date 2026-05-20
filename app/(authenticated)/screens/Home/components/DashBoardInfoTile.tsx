@@ -4,7 +4,7 @@ import { BlurView } from 'expo-blur';
 
 import { Text, useTheme } from '@rneui/themed';
 
-import { dashboardStyle } from 'styles/dashboardStyles';
+import { useDashboardStyle } from 'styles/dashboardStyles';
 
 interface DashBoardInfoTitleProps {
   infoTitle: string;
@@ -13,6 +13,7 @@ interface DashBoardInfoTitleProps {
 
 const DashBoardInfoTile = ({ infoTitle, infoValue }: DashBoardInfoTitleProps) => {
   const { theme } = useTheme();
+  const dashboardStyle = useDashboardStyle();
 
   return (
     <View

@@ -1,12 +1,14 @@
 import React from 'react';
-import { ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { BarChart, LineChart } from 'react-native-gifted-charts';
-import { Picker } from '@react-native-picker/picker';
+import fuelLog from 'test-data/fuelLog.json';
 
 import { Text, useTheme } from '@rneui/themed';
 
-import { dashboardStyle } from 'styles/dashboardStyles';
+import { userStore } from 'store/userStore';
+import { useDashboardStyle } from 'styles/dashboardStyles';
 import { FuelEntry } from 'types/logsTypes';
+import { getDashboardDate } from 'utils/date';
 
 import DashBoardInfoTile from '../components/DashBoardInfoTile';
 
@@ -15,18 +17,23 @@ type BarDataItem = {
   label: string;
 };
 
-type MetricKey = 'efficiency' | 'rateOverTime' | 'distancePerFill';
+// type MetricKey = 'Efficiency' | 'Rate Over Time' | 'Distance Per Fill';
 
-const dataItems: { label: string; value: MetricKey }[] = [
-  { label: 'Efficiency', value: 'efficiency' },
-  { label: 'Rate Over Time', value: 'rateOverTime' },
-  { label: 'Distance Per Fill', value: 'distancePerFill' },
-];
+// const dataItems: { label: string; value: MetricKey }[] = [
+//   { label: 'Efficiency', value: 'efficiency' },
+//   { label: 'Rate Over Time', value: 'rateOverTime' },
+//   { label: 'Distance Per Fill', value: 'distancePerFill' },
+// ];
+
+const metricTab = ['Efficiency', 'Cost', 'Distance'];
 
 const Dashboard = () => {
   const { theme } = useTheme();
-  const [selectedValue, setSelectedValue] = React.useState<MetricKey>('efficiency');
-  const fuelLogs: Record<string, FuelEntry> = {};
+  const dashboardStyle = useDashboardStyle();
+
+  const user = userStore.getState().user;
+  const [selectedValue, setSelectedValue] = React.useState<number>(0);
+  const fuelLogs: Record<string, FuelEntry> = fuelLog;
 
   const sortedLogs = React.useMemo(() => {
     return Object.values(fuelLogs).sort(
@@ -63,69 +70,96 @@ const Dashboard = () => {
     }
   };
 
-  const metricDataMap: Record<MetricKey, { value: number; label: string }[]> = React.useMemo(
+  const metricDataMap: Record<number, { value: number; label: string }[]> = React.useMemo(
     () => ({
-      efficiency: formatFuelData(sortedLogs, 'fuel_per_km'),
-      rateOverTime: formatFuelData(sortedLogs, 'fuel_cost'),
-      distancePerFill: formatFuelData(sortedLogs, 'total_kms_covered'),
+      0: formatFuelData(sortedLogs, 'fuel_per_km'),
+      1: formatFuelData(sortedLogs, 'fuel_cost'),
+      2: formatFuelData(sortedLogs, 'total_kms_covered'),
     }),
     [sortedLogs]
   );
 
-  const selectedLabel = dataItems.find(item => item.value === selectedValue)?.label;
+  const username = user?.displayName || '';
+  const selectedLabel = metricTab[selectedValue];
   return (
     <ScrollView style={{ marginVertical: 15 }}>
       <View style={dashboardStyle.container}>
-        <Text h4 style={{ padding: 8, textAlign: 'center' }}>
-          {selectedLabel}
-        </Text>
-        {Object.values(fuelLogs).length > 0 ? (
-          <LineChart
-            curved
-            spacing={80}
-            height={250}
-            thickness={5}
-            curveType={1}
-            initialSpacing={30}
-            hideDataPoints={false}
-            color={theme.colors.primary}
-            data={metricDataMap[selectedValue]}
-            dataPointsColor={theme.colors.error}
-            // X-axis settings
-            xAxisThickness={1}
-            xAxisColor={theme.colors.foreground}
-            xAxisLabelTextStyle={{ color: theme.colors.foreground, fontSize: 12 }}
-            // Y-axis settings
-            yAxisThickness={1}
-            yAxisColor={theme.colors.foreground}
-            yAxisTextStyle={{ color: theme.colors.foreground, fontSize: 12 }}
-            // Optional
-            rulesType="dashed"
-            hideRules={false}
-            yAxisLabelWidth={30}
-            showVerticalLines={true}
-            showValuesAsDataPointsText
-            verticalLinesUptoDataPoint={true}
-            rulesColor={theme.colors.foreground}
-            verticalLinesColor={theme.colors.foreground}
-          />
-        ) : (
-          <View>
-            <Text h2 style={{ textAlign: 'center', marginVertical: 50 }}>
-              No data available to display
-            </Text>
-          </View>
-        )}
+        <View style={{ flex: 1, flexDirection: 'column' }}>
+          <Text style={{ color: theme.colors.grey5 }}>{getDashboardDate()}</Text>
+          <Text h2>Hi {username} 👋</Text>
+        </View>
 
-        <View style={{ ...dashboardStyle.pickerContainer, borderColor: theme.colors.primary }}>
-          <Picker
-            selectedValue={selectedValue}
-            mode="dropdown"
-            onValueChange={itemValue => setSelectedValue(itemValue)}>
-            {dataItems.map(item => {
-              return <Picker.Item label={item.label} value={item.value} key={item.label} />;
+        <View style={dashboardStyle.card}>
+          <Text style={dashboardStyle.cardLabel}>AVG {selectedLabel}</Text>
+          <View style={dashboardStyle.cardRow}>
+            <Text style={dashboardStyle.cardValue}>
+              42.8 <Text style={dashboardStyle.cardUnit}>km/L</Text>
+            </Text>
+            <View style={dashboardStyle.cardBadge}>
+              <Text style={dashboardStyle.cardBadgeText}>✦ Tuned up</Text>
+            </View>
+          </View>
+          <Text style={dashboardStyle.cardChange}>↗ +6.2% vs. last month</Text>
+          {Object.values(fuelLogs).length > 0 ? (
+            <LineChart
+              curved
+              areaChart
+              hideYAxisText
+              hideAxesAndRules
+              width={350}
+              height={120}
+              thickness={2}
+              curveType={1}
+              initialSpacing={30}
+              hideDataPoints={false}
+              color={theme.colors.primary}
+              data={metricDataMap[selectedValue]}
+              dataPointsColor={theme.colors.primary}
+              // Color theme
+              startFillColor={theme.colors.primary}
+              endFillColor={'#1a1a1a'}
+              startOpacity={0.3}
+              endOpacity={0.0}
+              xAxisLabelTextStyle={{ height: 0, opacity: 0 }}
+            />
+          ) : (
+            <View>
+              <Text h2 style={{ textAlign: 'center', marginVertical: 50 }}>
+                No data available to display
+              </Text>
+            </View>
+          )}
+        </View>
+
+        {/* Filters */}
+        <View style={dashboardStyle.filterRow}>
+          <Text style={dashboardStyle.filterTitle}>OVERVIEW</Text>
+
+          <View style={dashboardStyle.filterBody}>
+            {metricTab.map((item, index) => {
+              const isActive = selectedValue === index;
+              return (
+                <Pressable
+                  key={item}
+                  onPress={() => setSelectedValue(index)}
+                  style={{
+                    borderRadius: 8,
+                    paddingVertical: 12,
+                    paddingHorizontal: 16,
+                    backgroundColor: isActive ? theme.colors.grey3 : 'transparent',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: isActive ? '600' : '400',
+                      color: isActive ? theme.colors.black : theme.colors.grey5,
+                    }}>
+                    {item}
+                  </Text>
+                </Pressable>
+              );
             })}
-          </Picker>
+          </View>
         </View>
       </View>
 

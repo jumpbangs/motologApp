@@ -1,5 +1,5 @@
 export interface FuelEntry {
-  id: string;
+  id?: string;
   rate: number;
   brand: string;
   location: string;

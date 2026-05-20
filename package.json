@@ -30,7 +30,7 @@
     "@react-navigation/native": "^7.1.6",
     "@rneui/base": "^4.0.0-rc.8",
     "@rneui/themed": "^4.0.0-rc.8",
-    "expo": "~53.0.12",
+    "expo": "~53.0.27",
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.6",
     "expo-font": "~13.3.2",
@@ -39,7 +39,7 @@
     "expo-image-picker": "~16.1.4",
     "expo-linear-gradient": "~14.1.5",
     "expo-linking": "~7.1.5",
-    "expo-router": "~5.1.0",
+    "expo-router": "~5.1.11",
     "expo-splash-screen": "~0.30.10",
     "expo-status-bar": "~2.2.3",
     "expo-symbols": "~0.4.5",
@@ -50,6 +50,7 @@
     "react-dom": "19.0.0",
     "react-hook-form": "^7.58.1",
     "react-native": "0.79.4",
+    "react-native-edge-to-edge": "^1.8.1",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-gifted-charts": "^1.4.64",
     "react-native-keyboard-controller": "^1.18.6",
@@ -81,5 +82,6 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.0"
   },
-  "private": true
+  "private": true,
+  "packageManager": "pnpm@11.1.2+sha512.415a1cc25974731e75455c1468371be74c5aa5fb7621b50d4056d222451609f11412f23fd602e6169f1e060466641f798597e1be961a10688836a67b16569499"
 }
